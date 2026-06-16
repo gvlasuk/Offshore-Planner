@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SW Florida Offshore Trip Planner</title>
+<style>
+:root{--bg:#0d1b2a;--bg2:#112236;--bg3:#1a2e45;--bg4:#1e3552;--accent:#00bfff;--gold:#f5a623;--green:#2ecc71;--red:#e74c3c;--orange:#f39c12;--text:#e8f4fd;--text2:#8ab4cc;--text3:#5a7a8a;--border:rgba(0,191,255,0.15);--border2:rgba(0,191,255,0.3);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.header{background:#0a1628;border-bottom:1px solid var(--border2);padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap;}
+.htitle{font-size:18px;font-weight:700;color:var(--accent);}
+.hsub{font-size:11px;color:var(--text2);margin-top:2px;}
+.hbadge{margin-left:auto;background:rgba(0,191,255,0.1);border:1px solid var(--border2);border-radius:20px;padding:3px 11px;font-size:11px;color:var(--accent);}
+.tabbar{display:flex;border-bottom:1px solid var(--border);background:var(--bg2);overflow-x:auto;}
+.tabbar button{padding:10px 16px;font-size:13px;font-weight:500;color:var(--text2);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;}
+.tabbar button:hover{color:var(--text);background:rgba(0,191,255,0.05);}
+.tabbar button.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,191,255,0.07);}
+.panel{display:none;padding:16px 20px;max-width:1080px;margin:0 auto;}
+.panel.active{display:block;}
+.card{background:rgba(17,34,54,0.97);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:14px;}
+.card-title{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px;}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px;}
+.metric{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 13px;}
+.metric-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;}
+.metric-value{font-size:20px;font-weight:700;color:var(--text);}
+.metric-unit{font-size:11px;color:var(--text2);font-weight:400;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:640px){.two-col{grid-template-columns:1fr;}}
+.drow{display:flex;justify-content:space-between;padding:3px 0;font-size:13px;}
+.dlabel{color:var(--text3);}.dval{color:var(--text);font-weight:500;}
+.dval.g{color:var(--green);}.dval.o{color:var(--orange);}.dval.r{color:var(--red);}.dval.gold{color:var(--gold);}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+.pill-go{background:rgba(46,204,113,0.15);color:var(--green);border:1px solid rgba(46,204,113,0.3);}
+.pill-mg{background:rgba(243,156,18,0.15);color:var(--orange);border:1px solid rgba(243,156,18,0.3);}
+.pill-no{background:rgba(231,76,60,0.15);color:var(--red);border:1px solid rgba(231,76,60,0.3);}
+.stars{color:var(--gold);font-size:13px;letter-spacing:-1px;}
+.stars-off{color:var(--text3);font-size:13px;letter-spacing:-1px;}
+.forecast-table{width:100%;border-collapse:collapse;font-size:12px;}
+.forecast-table th{padding:7px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);border-bottom:1px solid var(--border2);text-align:left;white-space:nowrap;}
+.forecast-table td{padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.forecast-table tr:last-child td{border-bottom:none;}
+.forecast-table tr:hover td{background:rgba(0,191,255,0.04);}
+.day-name{font-weight:700;font-size:13px;}.day-date{font-size:10px;color:var(--text2);}
+.sun-times{font-size:10px;color:var(--text3);margin-top:3px;}
+.info-bar{background:rgba(0,191,255,0.07);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--text2);margin-top:10px;line-height:1.6;}
+.warn-bar{background:rgba(243,156,18,0.07);border:1px solid rgba(243,156,18,0.3);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--orange);margin-top:10px;}
+.danger-bar{background:rgba(231,76,60,0.07);border:1px solid rgba(231,76,60,0.3);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--red);margin-top:10px;}
+.wbar{height:8px;border-radius:4px;overflow:hidden;display:flex;margin:8px 0;}
+.wseg{height:100%;}
+.wleg{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;}
+.wleg-item{display:flex;align-items:center;gap:5px;}
+.wleg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+.model-bar{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+.model-name{width:58px;font-size:11px;color:var(--text2);}
+.bar-track{flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;}
+.bar-val{width:50px;font-size:11px;color:var(--text2);text-align:right;}
+.spot-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;}
+.spot-controls label{color:var(--text2);}
+.spot-controls select,.spot-controls input[type=range]{background:var(--bg4);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:3px 7px;font-size:12px;}
+.ctrl-val{font-weight:700;color:var(--accent);min-width:48px;}
+.spot-table{width:100%;border-collapse:collapse;font-size:12px;}
+.spot-table th{padding:6px 9px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);border-bottom:1px solid var(--border2);text-align:left;}
+.spot-table td{padding:8px 9px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.spot-table tr:hover td{background:rgba(0,191,255,0.04);cursor:pointer;}
+.spot-table tr:last-child td{border-bottom:none;}
+.spot-name{font-weight:600;color:var(--text);}
+.spot-coords{font-size:10px;color:var(--text2);display:block;}
+.stag{display:inline-block;font-size:9px;padding:1px 5px;border-radius:3px;margin-left:3px;vertical-align:middle;}
+.stag-flt{background:rgba(155,89,182,0.2);color:#c39bd3;border:1px solid rgba(155,89,182,0.3);}
+.stag-pot{background:rgba(0,191,255,0.15);color:var(--accent);border:1px solid var(--border2);}
+.stag-reef{background:rgba(46,204,113,0.12);color:#82e0aa;border:1px solid rgba(46,204,113,0.25);}
+.stag-jd{background:rgba(245,166,35,0.15);color:var(--gold);border:1px solid rgba(245,166,35,0.3);}
+.stag-oor{background:rgba(231,76,60,0.15);color:var(--red);border:1px solid rgba(231,76,60,0.3);}
+.slider-row{margin-bottom:13px;}
+.slider-row label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;}
+.slider-row input[type=range]{width:100%;accent-color:var(--accent);}
+.slider-val{font-size:13px;font-weight:700;color:var(--accent);float:right;}
+.status-box{border-radius:6px;padding:10px 14px;margin-top:10px;font-size:13px;}
+.status-safe{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.3);color:var(--green);}
+.status-mg{background:rgba(243,156,18,0.1);border:1px solid rgba(243,156,18,0.3);color:var(--orange);}
+.status-danger{background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);color:var(--red);}
+.setup-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;}
+.setup-field{display:flex;flex-direction:column;gap:5px;}
+.setup-field label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;}
+.setup-field input,.setup-field select{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:8px 10px;font-size:14px;font-weight:500;}
+.setup-field input:focus,.setup-field select:focus{outline:none;border-color:var(--accent);}
+.save-btn{width:100%;margin-top:10px;padding:10px;background:rgba(0,191,255,0.15);border:1px solid var(--border2);border-radius:6px;color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;}
+.save-btn:hover{background:rgba(0,191,255,0.25);}
+.live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;margin-right:4px;vertical-align:middle;}
+.loading-spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.confidence-high{color:var(--green);font-size:10px;}
+.confidence-med{color:var(--orange);font-size:10px;}
+.confidence-low{color:var(--text3);font-size:10px;}
+.refresh-btn{background:rgba(0,191,255,0.12);border:1px solid var(--border2);border-radius:6px;color:var(--accent);font-size:12px;padding:5px 12px;cursor:pointer;float:right;}
+.refresh-btn:hover{background:rgba(0,191,255,0.22);}
+select option{background:#1a2e45;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+.sol-table{width:100%;border-collapse:collapse;font-size:12px;}
+.sol-table th{padding:6px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);border-bottom:1px solid var(--border2);text-align:left;}
+.sol-table td{padding:8px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.sol-table tr:last-child td{border-bottom:none;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:24px;">⚓</span>
+  <div>
+    <div class="htitle" id="hdr-title">SW Florida Offshore Trip Planner</div>
+    <div class="hsub" id="hdr-sub">Loading profile…</div>
+  </div>
+  <div class="hbadge" id="weather-badge"><span class="loading-spinner"></span>Fetching live weather…</div>
+</div>
+
+<div class="tabbar">
+  <button class="active" onclick="showPanel('forecast',this)">📅 7-Day Scores</button>
+  <button onclick="showPanel('weather',this)">🌊 Forecast</button>
+  <button onclick="showPanel('solunar',this)">🌙 Solunar &amp; Tides</button>
+  <button onclick="showPanel('spots',this)">📍 All 133 Spots</button>
+  <button onclick="showPanel('fuel',this)">⛽ Fuel Planner</button>
+  <button onclick="showPanel('setup',this)">⚙️ Boat Setup</button>
+</div>
+
+<!-- FORECAST -->
+<div id="panel-forecast" class="panel active">
+  <div class="card">
+    <div class="card-title">
+      Scoring — weather &amp; seas primary (60%)
+      <button class="refresh-btn" onclick="fetchWeatherAndRender()">↻ Refresh weather</button>
+    </div>
+    <div class="wbar">
+      <div class="wseg" style="width:35%;background:#e74c3c;"></div>
+      <div class="wseg" style="width:15%;background:#f39c12;"></div>
+      <div class="wseg" style="width:10%;background:#c0392b;"></div>
+      <div class="wseg" style="width:25%;background:#f5a623;"></div>
+      <div class="wseg" style="width:15%;background:#00bfff;"></div>
+    </div>
+    <div class="wleg">
+      <div class="wleg-item"><div class="wleg-dot" style="background:#e74c3c;"></div>Seas 35%</div>
+      <div class="wleg-item"><div class="wleg-dot" style="background:#f39c12;"></div>Wind 15%</div>
+      <div class="wleg-item"><div class="wleg-dot" style="background:#c0392b;"></div>Storm risk 10%</div>
+      <div class="wleg-item"><div class="wleg-dot" style="background:#f5a623;"></div>Solunar 25%</div>
+      <div class="wleg-item"><div class="wleg-dot" style="background:#00bfff;"></div>Tide 15%</div>
+    </div>
+    <div class="info-bar" id="weather-source-note" style="margin-top:8px;">
+      <span class="loading-spinner"></span>Fetching live data from Open-Meteo Marine API…
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">7-day trip scores — live forecast</div>
+    <div style="overflow-x:auto;">
+      <table class="forecast-table" id="forecast-table">
+        <thead>
+          <tr>
+            <th>Date</th><th>Conditions</th><th>Seas</th><th>Wind</th><th>Solunar / Sun</th><th>Tide</th><th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="forecast-tbody">
+          <tr><td colspan="7" style="padding:20px;text-align:center;color:var(--text2);">
+            <span class="loading-spinner"></span>Loading live weather data…
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="forecast-nogo-note" style="display:none;" class="warn-bar"></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Best picks <span id="best-picks-range" style="font-size:10px;color:var(--text3);font-weight:400;"></span></div>
+      <div id="best-picks-content" style="font-size:13px;color:var(--text2);">Loading…</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Active boat profile <span style="font-size:10px;color:var(--text3);font-weight:400;">(edit in ⚙️ Setup)</span></div>
+      <div id="profile-display" style="font-size:13px;line-height:2;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- WEATHER -->
+<div id="panel-weather" class="panel">
+  <div class="card">
+    <div class="card-title"><span class="live"></span>Live marine forecast — Open-Meteo · GFS + ECMWF · 25.72°N 82.65°W (~50nm WSW Caxambas)</div>
+    <div id="weather-detail-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+      <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text2);"><span class="loading-spinner"></span>Fetching forecast…</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Model sources</div>
+    <div style="font-size:13px;line-height:1.9;color:var(--text2);">
+      Open-Meteo aggregates multiple NWP models. The marine endpoint primarily uses <strong style="color:var(--text);">ERA5 + GFS wave model (WAVEWATCH III)</strong> for offshore wave height and period, and <strong style="color:var(--text);">GFS + ECMWF IFS</strong> for wind. Data is updated every 6 hours. Forecast confidence:
+      <div style="margin-top:8px;">
+        <div class="drow"><span class="dlabel">Hours 0–72</span><span class="dval g">High — use for go/no-go decisions</span></div>
+        <div class="drow"><span class="dlabel">Days 4–5</span><span class="dval o">Moderate — directional guidance</span></div>
+        <div class="drow"><span class="dlabel">Days 6–7</span><span class="dval" style="color:var(--text3);">Low — planning only, re-verify</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SOLUNAR -->
+<div id="panel-solunar" class="panel">
+  <div class="card">
+    <div class="card-title">Solunar ratings &amp; sunrise/sunset — calculated live for your dates &amp; location</div>
+    <div style="overflow-x:auto;">
+      <table class="sol-table">
+        <thead><tr><th>Date</th><th>🌅 Sunrise</th><th>🌇 Sunset</th><th>Rating</th><th>Major periods</th><th>Minor periods</th><th>Moon phase</th><th>Rec. depart</th></tr></thead>
+        <tbody id="solunar-tbody"><tr><td colspan="8" style="padding:16px;color:var(--text2);">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="info-bar">Major periods last ~2hrs, minor ~1hr. Best bite within 30 min of major onset. Solunar times calculated astronomically for 25.9°N 81.7°W (Caxambas area). All times EDT.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Tides — Naples/Marco Island (NOAA Station 8725110)</div>
+    <div style="overflow-x:auto;">
+      <table class="sol-table">
+        <thead><tr><th>Date</th><th>Low tide</th><th>High tide</th><th>At first light</th><th>Bottom fishing</th></tr></thead>
+        <tbody id="tide-tbody"><tr><td colspan="5" style="padding:16px;color:var(--text2);">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="info-bar">Tide times approximate — calculated from Naples tidal patterns. Verify at tidesandcurrents.noaa.gov station 8725110 for exact times.</div>
+  </div>
+</div>
+
+<!-- SPOTS -->
+<div id="panel-spots" class="panel">
+  <div class="spot-controls">
+    <div style="display:flex;align-items:center;gap:7px;">
+      <label>Max fuel one-way:</label>
+      <input type="range" min="10" max="150" value="90" step="5" id="fuelFilter" oninput="filterSpots()">
+      <span class="ctrl-val" id="fuelFilterVal">90 gal</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:7px;">
+      <label>Type:</label>
+      <select id="typeFilter" onchange="filterSpots()">
+        <option value="all">All types</option>
+        <option value="flt">FLT / Flat / Ledge</option>
+        <option value="pot">POT / Structure</option>
+        <option value="reef">Reef / BFL</option>
+        <option value="jd">JD grouper spots</option>
+        <option value="tower">Towers</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:7px;">
+      <label>Sort:</label>
+      <select id="sortMode" onchange="filterSpots()">
+        <option value="dist">Distance ↑</option>
+        <option value="fuel">Fuel ↑</option>
+        <option value="name">Name A–Z</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:7px;">
+      <label>Direction:</label>
+      <select id="dirFilter" onchange="filterSpots()">
+        <option value="all">All</option>
+        <option value="W">West</option>
+        <option value="WSW">WSW</option>
+        <option value="SW">SW</option>
+        <option value="SSW">SSW</option>
+        <option value="S">South</option>
+        <option value="WNW">WNW</option>
+      </select>
+    </div>
+  </div>
+  <div style="font-size:11px;color:var(--text3);margin-bottom:8px;" id="spotCount"></div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div style="overflow-x:auto;">
+      <table class="spot-table">
+        <thead><tr><th>#</th><th>Spot name</th><th>Dist</th><th>Dir</th><th>Fuel RT</th><th>Transit</th><th>Type</th></tr></thead>
+        <tbody id="spot-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card" id="spot-detail" style="display:none;">
+    <div class="card-title">Selected spot</div>
+    <div id="spot-detail-content"></div>
+  </div>
+  <div class="info-bar">All 133 Strikelines waypoints. 4 MHB spots (~107nm) flagged ⛔ beyond fuel range. Fuel and transit use your ⚙️ Boat Setup profile.</div>
+</div>
+
+<!-- FUEL -->
+<div id="panel-fuel" class="panel">
+  <div class="metric-grid" id="fuel-metrics"></div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Trip estimator</div>
+      <div class="slider-row"><label>Distance to spot (nm) <span class="slider-val" id="distOut">55 nm</span></label><input type="range" min="5" max="120" value="55" step="1" id="distSlider" oninput="calcFuel()"></div>
+      <div class="slider-row"><label>Number of stops <span class="slider-val" id="stopsOut">1</span></label><input type="range" min="1" max="4" value="1" step="1" id="stopsSlider" oninput="calcFuel()"></div>
+      <div class="slider-row"><label>Current fuel load (gal) <span class="slider-val" id="loadOut">200 gal</span></label><input type="range" min="50" max="200" value="200" step="10" id="loadSlider" oninput="calcFuel()"></div>
+      <div id="fuel-status" class="status-box status-safe">✓ Safe — reserve maintained</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Results</div>
+      <div style="font-size:13px;line-height:2.3;">
+        <div class="drow"><span class="dlabel">Total distance</span><span class="dval" id="fc-total">—</span></div>
+        <div class="drow"><span class="dlabel">Fuel consumed</span><span class="dval" id="fc-burn">—</span></div>
+        <div class="drow"><span class="dlabel">Fuel remaining</span><span class="dval" id="fc-remain">—</span></div>
+        <div class="drow"><span class="dlabel">Reserve buffer</span><span class="dval g" id="fc-buf">—</span></div>
+        <div class="drow"><span class="dlabel">One-way transit</span><span class="dval" id="fc-time">—</span></div>
+        <div class="drow"><span class="dlabel">Est. fuel cost</span><span class="dval" id="fc-cost">—</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Nearest 30 spots by fuel cost</div>
+    <div style="overflow-x:auto;"><table class="spot-table"><thead><tr><th>Spot</th><th>Dist nm</th><th>Fuel RT</th><th>Cost</th><th>Transit</th><th>Dir</th></tr></thead><tbody id="fuel-tbody"></tbody></table></div>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div id="panel-setup" class="panel">
+  <div class="card">
+    <div class="card-title">⚙️ Boat &amp; trip parameters</div>
+    <div class="info-bar" style="margin-top:0;margin-bottom:14px;">Edit to match your vessel. Hit Save and all fuel, range, transit and cost figures update across every tab instantly. Share this file with any crew member — they update this panel for their own boat.</div>
+    <div class="setup-grid">
+      <div class="setup-field"><label>Vessel name</label><input type="text" id="s-vessel" placeholder="e.g. Solace 28HCS"></div>
+      <div class="setup-field"><label>Engines</label><input type="text" id="s-engines" placeholder="e.g. Twin Mercury 300hp"></div>
+      <div class="setup-field"><label>Fuel tank capacity (gal)</label><input type="number" id="s-tank" placeholder="200" min="20" max="600"></div>
+      <div class="setup-field"><label>Reserve % (hold back)</label>
+        <select id="s-reserve">
+          <option value="25">25% — standard</option>
+          <option value="20">20%</option>
+          <option value="30">30% — conservative</option>
+          <option value="33">33% — very conservative</option>
+        </select>
+      </div>
+      <div class="setup-field"><label>Fuel efficiency (mpg)</label><input type="number" id="s-mpg" placeholder="1.6" step="0.1" min="0.3" max="10"></div>
+      <div class="setup-field"><label>Cruise speed (mph)</label><input type="number" id="s-speed" placeholder="35" min="10" max="80"></div>
+      <div class="setup-field"><label>Fuel cost per gallon ($)</label><input type="number" id="s-costpg" placeholder="4.50" step="0.05" min="1" max="15"></div>
+      <div class="setup-field"><label>Departure point</label><input type="text" id="s-depart" placeholder="e.g. Caxambas Pass"></div>
+      <div class="setup-field"><label>Offshore forecast lat (decimal N)</label><input type="number" id="s-fclat" placeholder="25.72" step="0.01"></div>
+      <div class="setup-field"><label>Offshore forecast lon (decimal W)</label><input type="number" id="s-fclon" placeholder="-82.65" step="0.01"></div>
+      <div class="setup-field"><label>Max sea state — NO-GO (ft)</label><input type="number" id="s-maxseas" placeholder="4" min="1" max="10" step="0.5"></div>
+      <div class="setup-field"><label>Max wind — NO-GO (kt)</label><input type="number" id="s-maxwind" placeholder="20" min="5" max="40"></div>
+    </div>
+    <button class="save-btn" onclick="saveSetup()">💾 Save and apply to all calculations</button>
+    <div id="setup-saved" style="display:none;margin-top:10px;font-size:13px;color:var(--green);">✓ Saved! Refreshing weather for new coordinates…</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Current active profile</div>
+    <div id="setup-active" style="font-size:13px;line-height:2;"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION & DEFAULTS
+// ============================================================
+var DEFAULT_PROFILE = {
+  vessel:"Solace 28HCS", engines:"Twin Mercury 300hp",
+  tank:200, reservePct:25, mpg:1.6, speed:35, costpg:4.50,
+  depart:"Caxambas Pass",
+  fcLat:25.72, fcLon:-82.65,
+  maxSeas:4, maxWind:20
+};
+
+function loadProfile() {
+  try { var s = localStorage.getItem("boatProfile"); return s ? JSON.parse(s) : DEFAULT_PROFILE; }
+  catch(e) { return DEFAULT_PROFILE; }
+}
+function getP() { return loadProfile(); }
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function showPanel(name, btn) {
+  var panels = document.querySelectorAll(".panel");
+  for (var i=0; i<panels.length; i++) { panels[i].classList.remove("active"); }
+  var buttons = document.querySelectorAll(".tabbar button");
+  for (var i=0; i<buttons.length; i++) { buttons[i].classList.remove("active"); }
+  document.getElementById("panel-"+name).classList.add("active");
+  if (btn) { btn.classList.add("active"); }
+}
+
+// ============================================================
+// ASTRONOMY — SOLUNAR & SUNRISE/SUNSET (no API needed)
+// ============================================================
+function julianDay(date) {
+  var a = Math.floor((14 - (date.getMonth()+1)) / 12);
+  var y = date.getFullYear() + 4800 - a;
+  var m = (date.getMonth()+1) + 12*a - 3;
+  return date.getDate() + Math.floor((153*m+2)/5) + 365*y + Math.floor(y/4) - Math.floor(y/100) + Math.floor(y/400) - 32045;
+}
+
+function sunTimes(date, lat, lon) {
+  var JD = julianDay(date);
+  var n = JD - 2451545.0 + 0.5;
+  var L = (280.46 + 0.9856474 * n) % 360;
+  var g = (357.528 + 0.9856003 * n) % 360;
+  var gR = g * Math.PI / 180;
+  var lam = L + 1.915 * Math.sin(gR) + 0.020 * Math.sin(2*gR);
+  var lamR = lam * Math.PI / 180;
+  var sinDec = Math.sin(23.439 * Math.PI/180) * Math.sin(lamR);
+  var dec = Math.asin(sinDec);
+  var RA = Math.atan2(Math.cos(dec)*Math.sin(lamR), Math.cos(lamR)) * 180/Math.PI;
+  var EqT = L - 0.0057183 - RA + 1.915*Math.sin(gR) + 0.020*Math.sin(2*gR);
+  var noon = 12 - lon/15 - EqT/60;
+  var cosH = (Math.sin(-0.0145) - Math.sin(lat*Math.PI/180)*Math.sin(dec)) /
+             (Math.cos(lat*Math.PI/180)*Math.cos(dec));
+  if (cosH < -1) { return {rise:0, set:24, noon:noon}; }
+  if (cosH > 1)  { return {rise:12, set:12, noon:noon}; }
+  var H = Math.acos(cosH) * 180/Math.PI / 15;
+  return { rise: noon - H, set: noon + H, noon: noon };
+}
+
+function moonPhase(date) {
+  var JD = julianDay(date);
+  var cycle = (JD - 2451550.1) / 29.530588853;
+  var phase = cycle - Math.floor(cycle);
+  return phase;
+}
+
+function moonTimes(date, lat, lon) {
+  var phase = moonPhase(date);
+  var lunarDay = phase * 24;
+  var major1 = (lunarDay % 24 + 24) % 24;
+  var major2 = (major1 + 12) % 24;
+  var minor1 = (major1 + 6) % 24;
+  var minor2 = (major1 + 18) % 24;
+  var lonOff = lon / 15;
+  function adj(h) {
+    var a = ((h - lonOff) % 24 + 24) % 24;
+    if (a > 20) { a -= 24; }
+    return a;
+  }
+  return {
+    major1: adj(major1), major2: adj(major2),
+    minor1: adj(minor1), minor2: adj(minor2)
+  };
+}
+
+function solunarRating(date, lat, lon) {
+  var sun = sunTimes(date, lat, lon);
+  var moon = moonTimes(date, lat, lon);
+  var phase = moonPhase(date);
+  var score = 3;
+  var newMoonBonus = (phase < 0.08 || phase > 0.92) ? 2 : 0;
+  var fullMoonBonus = (phase > 0.45 && phase < 0.55) ? 1 : 0;
+  var majorNearSunrise = Math.abs(moon.major1 - sun.rise) < 1.5 || Math.abs(moon.major2 - sun.rise) < 1.5;
+  var majorNearSunset  = Math.abs(moon.major1 - sun.set)  < 1.5 || Math.abs(moon.major2 - sun.set)  < 1.5;
+  if (majorNearSunrise || majorNearSunset) { score += 2; }
+  score += newMoonBonus + fullMoonBonus;
+  score = Math.max(1, Math.min(5, Math.round(score)));
+  return { score:score, major1:moon.major1, major2:moon.major2, minor1:moon.minor1, minor2:moon.minor2 };
+}
+
+function fmtHr(h) {
+  if (h === null || isNaN(h)) { return "—"; }
+  var hh = ((h % 24) + 24) % 24;
+  var hr = Math.floor(hh);
+  var mn = Math.round((hh - hr) * 60);
+  if (mn === 60) { hr++; mn = 0; }
+  var ampm = hr >= 12 ? "pm" : "am";
+  var displayHr = hr % 12; if (displayHr === 0) { displayHr = 12; }
+  return displayHr + ":" + (mn < 10 ? "0"+mn : mn) + ampm;
+}
+
+function moonPhaseName(phase) {
+  if (phase < 0.03 || phase > 0.97) { return "New moon 🌑"; }
+  if (phase < 0.22) { return "Waxing crescent"; }
+  if (phase < 0.28) { return "First quarter 🌓"; }
+  if (phase < 0.47) { return "Waxing gibbous"; }
+  if (phase < 0.53) { return "Full moon 🌕"; }
+  if (phase < 0.72) { return "Waning gibbous"; }
+  if (phase < 0.78) { return "Last quarter 🌗"; }
+  return "Waning crescent";
+}
+
+function starsHtml(n) {
+  var s = "";
+  for (var i=1; i<=5; i++) {
+    s += '<span class="'+(i<=n?"stars":"stars-off")+'">★</span>';
+  }
+  return s;
+}
+
+function buildSolunarTable() {
+  var p = getP();
+  var lat = 25.9, lon = -81.73;
+  var rows = "";
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  for (var d=0; d<7; d++) {
+    var date = new Date(today.getTime() + d*86400000);
+    var sun = sunTimes(date, lat, lon);
+    var sol = solunarRating(date, lat, lon);
+    var phase = moonPhase(date);
+    var riseAdj = sun.rise - 5; // EDT offset approx
+    var setAdj  = sun.set  - 5;
+    var depart = fmtHr(sol.major1 - 0.33);
+    var dayName = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date.getDay()];
+    var monthName = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date.getMonth()];
+    var dateStr = dayName + " " + monthName + " " + date.getDate();
+    var isBest = sol.score >= 5;
+    rows += '<tr' + (isBest ? ' style="background:rgba(245,166,35,0.04);"' : '') + '>' +
+      '<td style="' + (isBest ? "color:var(--gold);font-weight:700;" : "") + '">' + dateStr + '</td>' +
+      '<td style="color:var(--gold);">' + fmtHr(riseAdj) + '</td>' +
+      '<td style="color:var(--text2);">' + fmtHr(setAdj) + '</td>' +
+      '<td>' + starsHtml(sol.score) + '</td>' +
+      '<td style="color:var(--gold);">' + fmtHr(sol.major1) + ' · ' + fmtHr(sol.major2) + '</td>' +
+      '<td style="color:var(--text2);">' + fmtHr(sol.minor1) + ' · ' + fmtHr(sol.minor2) + '</td>' +
+      '<td style="color:var(--text2);">' + moonPhaseName(phase) + '</td>' +
+      '<td style="color:' + (isBest ? "var(--gold)" : "var(--accent)") + ';font-weight:700;">' + depart + (isBest ? " ⭐" : "") + '</td>' +
+      '</tr>';
+  }
+  document.getElementById("solunar-tbody").innerHTML = rows;
+  buildTideTable();
+}
+
+// Approximate tide pattern for Naples (semi-diurnal, ~12.4hr cycle)
+function buildTideTable() {
+  var rows = "";
+  var today = new Date(); today.setHours(0,0,0,0);
+  // Base low tide reference for Naples area (approximate)
+  var baseLow = 3.2; // hours past midnight for first low
+  for (var d=0; d<7; d++) {
+    var date = new Date(today.getTime() + d*86400000);
+    var dayName = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date.getDay()];
+    var monthName = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date.getMonth()];
+    var dateStr = dayName + " " + monthName + " " + date.getDate();
+    // Each day shifts ~50 min later (lunar day = 24h 50m)
+    var shift = d * (50/60);
+    var low1  = ((baseLow + shift) % 24 + 24) % 24;
+    var high1 = (low1 + 6.2) % 24;
+    var low2  = (low1 + 12.4) % 24;
+    var high2 = (low1 + 18.6) % 24;
+    var sun = sunTimes(date, 25.9, -81.73);
+    var sunriseEDT = sun.rise - 5;
+    var isOutgoing = (sunriseEDT > low1 && sunriseEDT < high1) || (sunriseEDT > low2);
+    var tideAtLight = isOutgoing ? "Outgoing ↓" : "Incoming ↑";
+    var tideColor  = isOutgoing ? "var(--accent)" : "var(--text2)";
+    var fishQuality = isOutgoing ? "Good ✓" : "Moderate";
+    var fishColor  = isOutgoing ? "var(--green)" : "var(--orange)";
+    var isBest = d === 5; // placeholder — overridden by weather score
+    rows += '<tr' + (isBest ? ' style="background:rgba(0,191,255,0.03);"' : '') + '>' +
+      '<td>' + dateStr + '</td>' +
+      '<td style="color:var(--text2);">' + fmtHr(low1) + ' / ' + fmtHr(low2) + '</td>' +
+      '<td style="color:var(--text2);">' + fmtHr(high1) + ' / ' + fmtHr(high2) + '</td>' +
+      '<td style="color:' + tideColor + ';">' + tideAtLight + '</td>' +
+      '<td style="color:' + fishColor + ';">' + fishQuality + '</td>' +
+      '</tr>';
+  }
+  document.getElementById("tide-tbody").innerHTML = rows;
+}
+
+// ============================================================
+// WEATHER — OPEN-METEO MARINE API (live fetch)
+// ============================================================
+function fetchWeatherAndRender() {
+  var p = getP();
+  var lat = p.fcLat || 25.72;
+  var lon = p.fcLon || -82.65;
+
+  document.getElementById("weather-source-note").innerHTML =
+    '<span class="loading-spinner"></span>Fetching live data from Open-Meteo for ' + lat + '°N, ' + Math.abs(lon) + '°W…';
+  document.getElementById("forecast-tbody").innerHTML =
+    '<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--text2);"><span class="loading-spinner"></span>Loading…</td></tr>';
+  document.getElementById("weather-badge").innerHTML =
+    '<span class="loading-spinner"></span>Fetching live weather…';
+
+  // Open-Meteo Marine + Forecast combined
+  var marineUrl = "https://marine-api.open-meteo.com/v1/marine?" +
+    "latitude=" + lat + "&longitude=" + lon +
+    "&daily=wave_height_max,wave_period_max,wave_direction_dominant,swell_wave_height_max" +
+    "&timezone=America%2FNew_York&forecast_days=7";
+
+  var forecastUrl = "https://api.open-meteo.com/v1/forecast?" +
+    "latitude=" + lat + "&longitude=" + lon +
+    "&daily=wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant," +
+    "precipitation_probability_max,weather_code" +
+    "&wind_speed_unit=kn&timezone=America%2FNew_York&forecast_days=7";
+
+  var marineData = null;
+  var forecastData = null;
+
+  function tryRender() {
+    if (marineData && forecastData) {
+      renderForecast(marineData, forecastData);
+    }
+  }
+
+  fetch(marineUrl)
+    .then(function(r) { return r.json(); })
+    .then(function(d) { marineData = d; tryRender(); })
+    .catch(function(e) {
+      console.error("Marine API error:", e);
+      document.getElementById("forecast-tbody").innerHTML =
+        '<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--orange);">⚠ Could not fetch marine data. Check your internet connection or try refreshing. Error: ' + e.message + '</td></tr>';
+      document.getElementById("weather-badge").innerHTML =
+        '⚠ Weather fetch failed — check connection';
+    });
+
+  fetch(forecastUrl)
+    .then(function(r) { return r.json(); })
+    .then(function(d) { forecastData = d; tryRender(); })
+    .catch(function(e) {
+      console.error("Forecast API error:", e);
+    });
+}
+
+function waveHeightFt(m) {
+  return Math.round(m * 3.281 * 10) / 10;
+}
+
+function windDir(deg) {
+  var dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+  return dirs[Math.round(deg/22.5) % 16];
+}
+
+function weatherCodeDesc(code) {
+  if (code === 0) { return "Clear"; }
+  if (code <= 3)  { return "Partly cloudy"; }
+  if (code <= 48) { return "Foggy/overcast"; }
+  if (code <= 67) { return "Rain"; }
+  if (code <= 77) { return "Snow/sleet"; }
+  if (code <= 82) { return "Showers"; }
+  if (code <= 99) { return "Thunderstorms ⚡"; }
+  return "Unknown";
+}
+
+function scoreDay(waveM, windKt, precipPct, weatherCode, solScore, isOutgoing, dayIndex) {
+  var p = getP();
+  var waveFt = waveHeightFt(waveM);
+  var isThunder = weatherCode >= 95;
+  // Hard NO-GO
+  if (waveFt > p.maxSeas || windKt > p.maxWind || isThunder) {
+    return { score: 0, nogo: true, nogoReason: isThunder ? "Thunderstorm risk" : (waveFt > p.maxSeas ? "Seas " + waveFt + "ft exceed limit" : "Wind " + Math.round(windKt) + "kt exceeds limit") };
+  }
+  // Seas score (35%) — scale: 0ft=100, maxSeas=0
+  var seasScore = Math.max(0, 100 - (waveFt / p.maxSeas) * 100) * 0.35;
+  // Wind score (15%)
+  var windScore = Math.max(0, 100 - (windKt / p.maxWind) * 100) * 0.15;
+  // Storm risk (10%)
+  var stormScore = (1 - precipPct/100) * 100 * 0.10;
+  // Solunar (25%)
+  var solScore25 = (solScore / 5) * 100 * 0.25;
+  // Tide (15%)
+  var tideScore = (isOutgoing ? 100 : 55) * 0.15;
+  // Confidence reduction for days 4-7
+  var confidence = dayIndex < 3 ? 1.0 : dayIndex < 5 ? 0.9 : 0.8;
+  var total = Math.round((seasScore + windScore + stormScore + solScore25 + tideScore) * confidence);
+  return { score: Math.min(99, Math.max(1, total)), nogo: false };
+}
+
+function renderForecast(marine, forecast) {
+  var today = new Date(); today.setHours(0,0,0,0);
+  var lat = 25.9; var lon = -81.73;
+  var rows = "";
+  var nogoDays = [];
+  var scoredDays = [];
+
+  for (var d=0; d<7; d++) {
+    var date = new Date(today.getTime() + d*86400000);
+    var dayName = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date.getDay()];
+    var monthName = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date.getMonth()];
+    var dateStr = dayName + " " + monthName + " " + date.getDate();
+
+    var waveM    = (marine.daily && marine.daily.wave_height_max) ? (marine.daily.wave_height_max[d] || 0.5) : 0.5;
+    var windKt   = (forecast.daily && forecast.daily.wind_speed_10m_max) ? (forecast.daily.wind_speed_10m_max[d] || 10) : 10;
+    var gustKt   = (forecast.daily && forecast.daily.wind_gusts_10m_max) ? (forecast.daily.wind_gusts_10m_max[d] || 12) : 12;
+    var windDeg  = (forecast.daily && forecast.daily.wind_direction_10m_dominant) ? (forecast.daily.wind_direction_10m_dominant[d] || 180) : 180;
+    var precipPct = (forecast.daily && forecast.daily.precipitation_probability_max) ? (forecast.daily.precipitation_probability_max[d] || 0) : 0;
+    var wCode    = (forecast.daily && forecast.daily.weather_code) ? (forecast.daily.weather_code[d] || 0) : 0;
+    var wavePeriod = (marine.daily && marine.daily.wave_period_max) ? (marine.daily.wave_period_max[d] || 6) : 6;
+
+    var waveFt = waveHeightFt(waveM);
+    var sol = solunarRating(date, lat, lon);
+    var sun = sunTimes(date, lat, lon);
+    var sunriseEDT = sun.rise - 5;
+    var sunsetEDT  = sun.set  - 5;
+    var shift = d * (50/60);
+    var low1 = ((3.2 + shift) % 24 + 24) % 24;
+    var high1 = (low1 + 6.2) % 24;
+    var low2  = (low1 + 12.4) % 24;
+    var isOutgoing = (sunriseEDT > low1 && sunriseEDT < high1) || (sunriseEDT > low2 && sunriseEDT < (low2+6.2));
+    var tideStr = isOutgoing ? "Outgoing ↓" : "Incoming ↑";
+    var tideCol = isOutgoing ? "var(--accent)" : "var(--text2)";
+    var result = scoreDay(waveM, windKt, precipPct, wCode, sol.score, isOutgoing, d);
+    var condStr = windDir(windDeg) + " " + Math.round(windKt) + "kt";
+    if (gustKt > windKt + 5) { condStr += " g" + Math.round(gustKt) + "kt"; }
+    if (precipPct > 30) { condStr += " · " + precipPct + "% rain"; }
+    if (wCode >= 95) { condStr += " · ⚡ tstm"; }
+    var waveStr = waveFt.toFixed(1) + "ft @ " + Math.round(wavePeriod) + "s";
+    var conf = d < 3 ? '<span class="confidence-high">●</span>' : d < 5 ? '<span class="confidence-med">●</span>' : '<span class="confidence-low">●</span>';
+    var scoreHtml;
+    if (result.nogo) {
+      scoreHtml = '<span class="pill pill-no">NO-GO ✗</span>';
+      nogoDays.push(dateStr + " — " + result.nogoReason);
+    } else if (result.score >= 75) {
+      scoreHtml = '<span class="pill pill-go">' + result.score + '/100 ✓</span>';
+    } else if (result.score >= 50) {
+      scoreHtml = '<span class="pill pill-mg">' + result.score + '/100 ⚠</span>';
+    } else {
+      scoreHtml = '<span class="pill pill-no">' + result.score + '/100</span>';
+    }
+    var isBest = !result.nogo && result.score >= 85;
+    rows += '<tr' + (isBest ? ' style="background:rgba(245,166,35,0.04);"' : '') + '>' +
+      '<td><div class="day-name" style="' + (result.nogo ? "color:var(--red);" : isBest ? "color:var(--gold);" : "") + '">' + dayName + (isBest ? " ★" : "") + '</div><div class="day-date">' + monthName + " " + date.getDate() + '</div></td>' +
+      '<td style="font-size:11px;color:' + (result.nogo ? "var(--red)" : "var(--text2)") + ';">' + condStr + ' ' + conf + '</td>' +
+      '<td style="color:' + (waveFt > 3 ? "var(--orange)" : waveFt > 4 ? "var(--red)" : "var(--text)") + ';">' + waveStr + '</td>' +
+      '<td>' + starsHtml(sol.score) + '<div class="sun-times">🌅 ' + fmtHr(sunriseEDT) + ' &nbsp; 🌇 ' + fmtHr(sunsetEDT) + '</div></td>' +
+      '<td style="color:' + tideCol + ';">' + tideStr + '</td>' +
+      '<td>' + scoreHtml + '</td>' +
+      '</tr>';
+    if (!result.nogo) {
+      scoredDays.push({ dateStr:dateStr, score:result.score, waveFt:waveFt, windKt:Math.round(windKt), solScore:sol.score, isOutgoing:isOutgoing, majorTime:fmtHr(sol.major1) });
+    }
+  }
+
+  document.getElementById("forecast-tbody").innerHTML = rows;
+
+  // NO-GO note
+  if (nogoDays.length > 0) {
+    document.getElementById("forecast-nogo-note").style.display = "block";
+    document.getElementById("forecast-nogo-note").textContent = "⛔ NO-GO days: " + nogoDays.join(" · ");
+  } else {
+    document.getElementById("forecast-nogo-note").style.display = "none";
+  }
+
+  // Best picks
+  scoredDays.sort(function(a,b) { return b.score - a.score; });
+  var medals = ["🏆","🥈","🥉"];
+  var pickHtml = "";
+  for (var i=0; i<Math.min(3,scoredDays.length); i++) {
+    var day = scoredDays[i];
+    pickHtml += '<div style="padding:6px 0;border-bottom:1px solid var(--border);">' +
+      '<strong style="color:' + (i===0?"var(--gold)":i===1?"var(--accent)":"var(--text)") + ';">' + medals[i] + ' ' + day.dateStr + ' — ' + day.score + '/100</strong><br>' +
+      '<span style="font-size:11px;color:var(--text2);">Seas ' + day.waveFt.toFixed(1) + 'ft · Wind ' + day.windKt + 'kt · ' + starsHtml(day.solScore) + ' major ' + day.majorTime + ' · ' + (day.isOutgoing?"Outgoing ↓":"Incoming ↑") + '</span>' +
+      '</div>';
+  }
+  if (!pickHtml) { pickHtml = '<div style="color:var(--text2);">No clearly good days in this window — check conditions closely.</div>'; }
+  document.getElementById("best-picks-content").innerHTML = pickHtml;
+
+  // Update weather detail panel
+  var detailHtml = "";
+  for (var d=0; d<7; d++) {
+    var date2 = new Date(today.getTime() + d*86400000);
+    var dayName2 = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date2.getDay()];
+    var monthName2 = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date2.getMonth()];
+    var wM = (marine.daily && marine.daily.wave_height_max) ? (marine.daily.wave_height_max[d]||0.5) : 0.5;
+    var wKt = (forecast.daily && forecast.daily.wind_speed_10m_max) ? (forecast.daily.wind_speed_10m_max[d]||10) : 10;
+    var gKt = (forecast.daily && forecast.daily.wind_gusts_10m_max) ? (forecast.daily.wind_gusts_10m_max[d]||12) : 12;
+    var wDeg = (forecast.daily && forecast.daily.wind_direction_10m_dominant) ? (forecast.daily.wind_direction_10m_dominant[d]||180) : 180;
+    var pp = (forecast.daily && forecast.daily.precipitation_probability_max) ? (forecast.daily.precipitation_probability_max[d]||0) : 0;
+    var wc = (forecast.daily && forecast.daily.weather_code) ? (forecast.daily.weather_code[d]||0) : 0;
+    var wp = (marine.daily && marine.daily.wave_period_max) ? (marine.daily.wave_period_max[d]||6) : 6;
+    var conf2 = d < 3 ? "High confidence" : d < 5 ? "Moderate confidence" : "Directional only";
+    var confCol = d < 3 ? "var(--green)" : d < 5 ? "var(--orange)" : "var(--text3)";
+    detailHtml += '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 13px;">' +
+      '<div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px;">' + dayName2 + " " + monthName2 + " " + date2.getDate() + ' <span style="font-size:10px;color:' + confCol + ';">' + conf2 + '</span></div>' +
+      '<div class="drow"><span class="dlabel">Wind</span><span class="dval">' + windDir(wDeg) + " " + Math.round(wKt) + 'kt (gusts ' + Math.round(gKt) + 'kt)</span></div>' +
+      '<div class="drow"><span class="dlabel">Seas</span><span class="dval">' + waveHeightFt(wM).toFixed(1) + 'ft @ ' + Math.round(wp) + 's</span></div>' +
+      '<div class="drow"><span class="dlabel">Conditions</span><span class="dval">' + weatherCodeDesc(wc) + '</span></div>' +
+      '<div class="drow"><span class="dlabel">Rain probability</span><span class="dval' + (pp>50?" o":"") + '">' + pp + '%</span></div>' +
+      '</div>';
+  }
+  document.getElementById("weather-detail-grid").innerHTML = detailHtml;
+
+  // Update timestamp badge
+  var now = new Date();
+  document.getElementById("weather-badge").innerHTML =
+    '<span class="live"></span>Live · Updated ' + now.getHours() + ':' + (now.getMinutes()<10?"0":"")+now.getMinutes();
+
+  var p2 = getP();
+  document.getElementById("weather-source-note").innerHTML =
+    '<span class="live"></span><strong>Open-Meteo Marine API</strong> · GFS + ECMWF · ' + (p2.fcLat||25.72) + '°N, ' + Math.abs(p2.fcLon||-82.65) + '°W · ' +
+    'Updated ' + now.toLocaleTimeString() + ' · ' +
+    '<span class="confidence-high">● Days 1–3 high</span> &nbsp;' +
+    '<span class="confidence-med">● Days 4–5 moderate</span> &nbsp;' +
+    '<span class="confidence-low">● Days 6–7 directional</span>';
+}
+
+// ============================================================
+// SPOTS DATA & FUNCTIONS
+// ============================================================
+var SPOTS = [
+  {name:"SLCAXE",lat:25.9037,lon:-81.7343,dist:0.0,dir:"E",type:"origin"},
+  {name:"Home Port",lat:25.9309,lon:-81.7024,dist:2.4,dir:"NE",type:"homeport"},
+  {name:"14MREEF1",lat:25.7885,lon:-81.9514,dist:13.6,dir:"WSW",type:"reef"},
+  {name:"SL6RFMOD",lat:25.9098,lon:-81.986,dist:13.6,dir:"W",type:"other"},
+  {name:"SL47FHB",lat:26.0296,lon:-81.987,dist:15.6,dir:"WNW",type:"other"},
+  {name:"D-TOWER",lat:25.5667,lon:-81.7167,dist:20.3,dir:"S",type:"tower"},
+  {name:"SL25BRFB",lat:26.0198,lon:-82.1081,dist:21.3,dir:"WNW",type:"reef"},
+  {name:"9MBOB",lat:26.0201,lon:-82.1095,dist:21.4,dir:"WNW",type:"other"},
+  {name:"SL25CRFB",lat:26.0201,lon:-82.1098,dist:21.4,dir:"WNW",type:"reef"},
+  {name:"SL25ARFB",lat:26.022,lon:-82.1082,dist:21.4,dir:"WNW",type:"reef"},
+  {name:"SL25RFB",lat:26.0203,lon:-82.1085,dist:21.4,dir:"WNW",type:"reef"},
+  {name:"SL25CSTR",lat:26.0208,lon:-82.1078,dist:21.4,dir:"WNW",type:"other"},
+  {name:"SL25DRFB",lat:26.0214,lon:-82.1099,dist:21.5,dir:"WNW",type:"reef"},
+  {name:"SL7RKPL",lat:25.9032,lon:-82.2408,dist:27.4,dir:"W",type:"other"},
+  {name:"SL37FLT",lat:25.4349,lon:-81.8065,dist:28.4,dir:"S",type:"flt"},
+  {name:"SL39FLT",lat:25.4349,lon:-81.8159,dist:28.5,dir:"S",type:"flt"},
+  {name:"SL36FLT",lat:25.4337,lon:-81.8084,dist:28.5,dir:"S",type:"flt"},
+  {name:"SL40FLT",lat:25.4338,lon:-81.8219,dist:28.6,dir:"S",type:"flt"},
+  {name:"SL38FLT",lat:25.4327,lon:-81.8089,dist:28.6,dir:"S",type:"flt"},
+  {name:"SL28FLT",lat:25.419,lon:-81.9895,dist:32.2,dir:"SSW",type:"flt"},
+  {name:"SL27FLT",lat:25.4195,lon:-81.9889,dist:32.2,dir:"SSW",type:"flt"},
+  {name:"SL26AFLT",lat:25.4177,lon:-81.9857,dist:32.2,dir:"SSW",type:"flt"},
+  {name:"SL26FLT",lat:25.4172,lon:-81.9863,dist:32.2,dir:"SSW",type:"flt"},
+  {name:"SL31FLT",lat:25.418,lon:-81.9968,dist:32.4,dir:"SSW",type:"flt"},
+  {name:"SL30FLT",lat:25.4189,lon:-81.9969,dist:32.4,dir:"SSW",type:"flt"},
+  {name:"SL32FLT",lat:25.4166,lon:-81.9961,dist:32.5,dir:"SSW",type:"flt"},
+  {name:"SL29FLT",lat:25.4166,lon:-81.9943,dist:32.5,dir:"SSW",type:"flt"},
+  {name:"SL33FLT",lat:25.4165,lon:-82.0086,dist:32.8,dir:"SSW",type:"flt"},
+  {name:"RTWR",lat:25.4667,lon:-82.1018,dist:32.9,dir:"SW",type:"tower"},
+  {name:"SL34FLT",lat:25.4161,lon:-82.0102,dist:32.9,dir:"SSW",type:"flt"},
+  {name:"SL35FLT",lat:25.416,lon:-82.0156,dist:33.0,dir:"SSW",type:"flt"},
+  {name:"SL26LDG",lat:26.0649,lon:-82.4094,dist:37.7,dir:"WNW",type:"other"},
+  {name:"SL1FLT",lat:25.6208,lon:-82.3969,dist:39.7,dir:"WSW",type:"flt"},
+  {name:"SL4POT",lat:25.5948,lon:-82.4213,dist:41.5,dir:"WSW",type:"pot"},
+  {name:"JDGRP9",lat:25.9827,lon:-82.5008,dist:41.7,dir:"W",type:"jd"},
+  {name:"JDGRP8",lat:25.8837,lon:-82.506,dist:41.7,dir:"W",type:"jd"},
+  {name:"JDGRP7",lat:25.8807,lon:-82.5114,dist:42.0,dir:"W",type:"jd"},
+  {name:"JDGRP6",lat:25.7803,lon:-82.5726,dist:45.9,dir:"W",type:"jd"},
+  {name:"SL19FLT",lat:25.1909,lon:-82.0935,dist:47.0,dir:"SSW",type:"flt"},
+  {name:"SL9BFLT",lat:25.7648,lon:-82.6005,dist:47.5,dir:"W",type:"flt"},
+  {name:"SL9EFLT",lat:25.765,lon:-82.6031,dist:47.7,dir:"W",type:"flt"},
+  {name:"SL9CFLT",lat:25.7601,lon:-82.6021,dist:47.7,dir:"W",type:"flt"},
+  {name:"SL9DFLT",lat:25.7602,lon:-82.6065,dist:47.9,dir:"W",type:"flt"},
+  {name:"SL9AFLT",lat:25.7632,lon:-82.6102,dist:48.1,dir:"W",type:"flt"},
+  {name:"SL9FLT",lat:25.7614,lon:-82.6139,dist:48.3,dir:"W",type:"flt"},
+  {name:"SL41FLT",lat:25.5214,lon:-82.5324,dist:48.9,dir:"WSW",type:"flt"},
+  {name:"SL8BFLT",lat:25.8154,lon:-82.6355,dist:49.0,dir:"W",type:"flt"},
+  {name:"P-Tower",lat:25.1167,lon:-82.0,dist:49.4,dir:"SSW",type:"tower"},
+  {name:"SL8FLT",lat:25.8157,lon:-82.6425,dist:49.4,dir:"W",type:"flt"},
+  {name:"SL18RBFL",lat:25.1227,lon:-82.0267,dist:49.5,dir:"SSW",type:"bfl"},
+  {name:"SL18AFLT",lat:25.1239,lon:-82.0334,dist:49.5,dir:"SSW",type:"flt"},
+  {name:"SL18FLT",lat:25.1247,lon:-82.0326,dist:49.5,dir:"SSW",type:"flt"},
+  {name:"SL44BFLT",lat:25.6732,lon:-82.6148,dist:49.6,dir:"WSW",type:"flt"},
+  {name:"SL44AFLT",lat:25.6723,lon:-82.6143,dist:49.6,dir:"WSW",type:"flt"},
+  {name:"SL44FLT",lat:25.6721,lon:-82.6148,dist:49.6,dir:"WSW",type:"flt"},
+  {name:"SL44FGB",lat:25.672,lon:-82.614,dist:49.6,dir:"WSW",type:"fg"},
+  {name:"SL18CFLT",lat:25.1229,lon:-82.0348,dist:49.6,dir:"SSW",type:"flt"},
+  {name:"SL18BFLT",lat:25.1237,lon:-82.0348,dist:49.6,dir:"SSW",type:"flt"},
+  {name:"SL17ERBFL",lat:25.1235,lon:-82.0434,dist:49.7,dir:"SSW",type:"bfl"},
+  {name:"SL19RBFL",lat:25.122,lon:-82.0375,dist:49.7,dir:"SSW",type:"bfl"},
+  {name:"SL8AFLT",lat:25.8159,lon:-82.6489,dist:49.7,dir:"W",type:"flt"},
+  {name:"SL19FRBFL",lat:25.1203,lon:-82.0371,dist:49.8,dir:"SSW",type:"bfl"},
+  {name:"SL19ERBFL",lat:25.1203,lon:-82.036,dist:49.8,dir:"SSW",type:"bfl"},
+  {name:"SL19DRBFL",lat:25.121,lon:-82.036,dist:49.8,dir:"SSW",type:"bfl"},
+  {name:"SL19CRBFL",lat:25.1211,lon:-82.0365,dist:49.8,dir:"SSW",type:"bfl"},
+  {name:"SL19BRBFL",lat:25.1211,lon:-82.0371,dist:49.8,dir:"SSW",type:"bfl"},
+  {name:"SL19ARBFL",lat:25.1211,lon:-82.0384,dist:49.8,dir:"SSW",type:"bfl"},
+  {name:"SL17CRBFL",lat:25.1221,lon:-82.0415,dist:49.8,dir:"SSW",type:"bfl"},
+  {name:"SL17ARBFL",lat:25.1215,lon:-82.0417,dist:49.8,dir:"SSW",type:"bfl"},
+  {name:"SL17RBFL",lat:25.1229,lon:-82.0425,dist:49.8,dir:"SSW",type:"bfl"},
+  {name:"SL17DRBFL",lat:25.121,lon:-82.0415,dist:49.9,dir:"SSW",type:"bfl"},
+  {name:"SL17BRBFL",lat:25.1202,lon:-82.0415,dist:49.9,dir:"SSW",type:"bfl"},
+  {name:"JDGRP2",lat:25.3667,lon:-82.4562,dist:50.7,dir:"SW",type:"jd"},
+  {name:"SL42AFLT",lat:25.4042,lon:-82.4939,dist:50.9,dir:"SW",type:"flt"},
+  {name:"FL42FLT",lat:25.4032,lon:-82.4926,dist:50.9,dir:"SW",type:"flt"},
+  {name:"SL43FLT",lat:25.4014,lon:-82.4998,dist:51.2,dir:"SW",type:"flt"},
+  {name:"SLFLAT1C",lat:25.621,lon:-82.6439,dist:52.0,dir:"WSW",type:"flt"},
+  {name:"SLFLAT1B",lat:25.6204,lon:-82.6434,dist:52.0,dir:"WSW",type:"flt"},
+  {name:"SLFLAT1A",lat:25.621,lon:-82.6429,dist:52.0,dir:"WSW",type:"flt"},
+  {name:"SLFLAT1",lat:25.6208,lon:-82.6436,dist:52.0,dir:"WSW",type:"flt"},
+  {name:"SL3POT",lat:25.6348,lon:-82.6601,dist:52.6,dir:"WSW",type:"pot"},
+  {name:"SL2DFLT",lat:25.6338,lon:-82.6611,dist:52.7,dir:"WSW",type:"flt"},
+  {name:"SL2CFLT",lat:25.6338,lon:-82.6614,dist:52.7,dir:"WSW",type:"flt"},
+  {name:"SL2BFLT",lat:25.6333,lon:-82.6618,dist:52.7,dir:"WSW",type:"flt"},
+  {name:"SL2AFLT",lat:25.634,lon:-82.6617,dist:52.7,dir:"WSW",type:"flt"},
+  {name:"SL12AFLT",lat:25.7258,lon:-82.6897,dist:52.7,dir:"WSW",type:"flt"},
+  {name:"SL11FLT",lat:25.7317,lon:-82.6901,dist:52.7,dir:"W",type:"flt"},
+  {name:"SL2FLT",lat:25.6338,lon:-82.6616,dist:52.7,dir:"WSW",type:"flt"},
+  {name:"SL12CFLT",lat:25.7251,lon:-82.6917,dist:52.8,dir:"WSW",type:"flt"},
+  {name:"SL12BFLT",lat:25.7268,lon:-82.6905,dist:52.8,dir:"WSW",type:"flt"},
+  {name:"SL12FLT",lat:25.7269,lon:-82.6905,dist:52.8,dir:"WSW",type:"flt"},
+  {name:"SL2APOT",lat:25.633,lon:-82.6661,dist:52.9,dir:"WSW",type:"pot"},
+  {name:"SL2POT",lat:25.6331,lon:-82.6671,dist:53.0,dir:"WSW",type:"pot"},
+  {name:"FG002",lat:25.6035,lon:-82.6578,dist:53.1,dir:"WSW",type:"fg"},
+  {name:"FG001",lat:25.6033,lon:-82.6573,dist:53.1,dir:"WSW",type:"fg"},
+  {name:"FG003",lat:25.6036,lon:-82.6595,dist:53.2,dir:"WSW",type:"fg"},
+  {name:"SL10AFLT",lat:25.7283,lon:-82.6994,dist:53.2,dir:"W",type:"flt"},
+  {name:"SL10FLT",lat:25.7268,lon:-82.7,dist:53.3,dir:"WSW",type:"flt"},
+  {name:"SL14AFLT",lat:25.7365,lon:-82.7141,dist:53.9,dir:"W",type:"flt"},
+  {name:"SL14FLT",lat:25.735,lon:-82.7147,dist:53.9,dir:"W",type:"flt"},
+  {name:"SL13AFLT",lat:25.7269,lon:-82.7126,dist:53.9,dir:"W",type:"flt"},
+  {name:"SL13FLT",lat:25.7251,lon:-82.7121,dist:53.9,dir:"WSW",type:"flt"},
+  {name:"JDGRP3",lat:25.3598,lon:-82.5318,dist:54.1,dir:"SW",type:"jd"},
+  {name:"CALIWRK",lat:25.3585,lon:-82.5333,dist:54.2,dir:"SW",type:"other"},
+  {name:"BRUCEST",lat:25.2147,lon:-82.4285,dist:55.9,dir:"SW",type:"other"},
+  {name:"JDSNGR1",lat:25.3712,lon:-82.6233,dist:57.8,dir:"WSW",type:"jd"},
+  {name:"JDGRP5",lat:25.372,lon:-82.6237,dist:57.8,dir:"WSW",type:"jd"},
+  {name:"SL22FLT",lat:25.7517,lon:-82.8204,dist:59.4,dir:"W",type:"flt"},
+  {name:"SL16FLT",lat:25.7068,lon:-82.8531,dist:61.6,dir:"W",type:"flt"},
+  {name:"SL15FLT",lat:25.7097,lon:-82.8643,dist:62.2,dir:"W",type:"flt"},
+  {name:"SL15AFLT",lat:25.7061,lon:-82.8659,dist:62.3,dir:"W",type:"flt"},
+  {name:"SL21FLT",lat:25.9177,lon:-82.8923,dist:62.5,dir:"W",type:"flt"},
+  {name:"SL20AFLT",lat:25.9172,lon:-82.8973,dist:62.8,dir:"W",type:"flt"},
+  {name:"SL20FLT",lat:25.9178,lon:-82.8974,dist:62.8,dir:"W",type:"flt"},
+  {name:"SL20PTH",lat:25.9187,lon:-82.8963,dist:62.8,dir:"W",type:"other"},
+  {name:"SL21AFLT",lat:25.9287,lon:-82.9014,dist:63.0,dir:"W",type:"flt"},
+  {name:"JDGRP1",lat:25.3716,lon:-82.7912,dist:65.5,dir:"WSW",type:"jd"},
+  {name:"SL45AFLT",lat:25.4083,lon:-82.8794,dist:68.7,dir:"WSW",type:"flt"},
+  {name:"SL45FLT",lat:25.4086,lon:-82.8787,dist:68.7,dir:"WSW",type:"flt"},
+  {name:"SL46FLT",lat:25.407,lon:-82.8911,dist:69.3,dir:"WSW",type:"flt"},
+  {name:"SL46BFLT",lat:25.4085,lon:-82.8936,dist:69.4,dir:"WSW",type:"flt"},
+  {name:"SL46AFLT",lat:25.4081,lon:-82.8926,dist:69.4,dir:"WSW",type:"flt"},
+  {name:"SL46BFLT2",lat:25.4066,lon:-82.8946,dist:69.5,dir:"WSW",type:"flt"},
+  {name:"SL46APOT",lat:25.4083,lon:-82.895,dist:69.5,dir:"WSW",type:"pot"},
+  {name:"SL46POT",lat:25.4082,lon:-82.8943,dist:69.5,dir:"WSW",type:"pot"},
+  {name:"SL23PH",lat:25.7523,lon:-83.0127,dist:69.7,dir:"W",type:"other"},
+  {name:"SL23FLT",lat:25.7501,lon:-83.0133,dist:69.7,dir:"W",type:"flt"},
+  {name:"SL23APH",lat:25.7546,lon:-83.0188,dist:70.0,dir:"W",type:"other"},
+  {name:"SL24BMHB",lat:25.9491,lon:-83.7136,dist:106.9,dir:"W",type:"mhb"},
+  {name:"SL24MHB",lat:25.9483,lon:-83.7145,dist:107.0,dir:"W",type:"mhb"},
+  {name:"SL25MHB",lat:25.9479,lon:-83.7217,dist:107.3,dir:"W",type:"mhb"},
+  {name:"SL24AMHB",lat:25.9481,lon:-83.722,dist:107.4,dir:"W",type:"mhb"}
+];
+
+function fuelRT(dist) { var p=getP(); return Math.round(dist*2/p.mpg*10)/10; }
+function fmtTransit(dist) {
+  var p=getP(); var m=Math.round(dist/p.speed*60);
+  var h=Math.floor(m/60); var mn=m%60;
+  return h>0 ? h+"h "+mn+"m" : mn+"m";
+}
+function typeGroup(t) {
+  if (t==="flt"||t==="fg") { return "flt"; }
+  if (t==="bfl") { return "reef"; }
+  return t;
+}
+function spotTag(t) {
+  if (t==="mhb") { return '<span class="stag stag-oor">OOR</span>'; }
+  if (t==="flt"||t==="fg") { return '<span class="stag stag-flt">FLT</span>'; }
+  if (t==="pot") { return '<span class="stag stag-pot">POT</span>'; }
+  if (t==="reef"||t==="bfl") { return '<span class="stag stag-reef">REEF</span>'; }
+  if (t==="jd") { return '<span class="stag stag-jd">JD</span>'; }
+  return "";
+}
+function filterSpots() {
+  var maxFuel = parseInt(document.getElementById("fuelFilter").value);
+  document.getElementById("fuelFilterVal").textContent = maxFuel+" gal";
+  var sort = document.getElementById("sortMode").value;
+  var typeF = document.getElementById("typeFilter").value;
+  var dirF  = document.getElementById("dirFilter").value;
+  var list  = SPOTS.filter(function(s){ return s.dist>0; });
+  if (typeF!=="all") {
+    list = list.filter(function(s){
+      var g=typeGroup(s.type);
+      if (typeF==="other") { return !["flt","pot","reef","jd","tower","mhb","bfl","fg"].includes(s.type); }
+      return g===typeF||s.type===typeF;
+    });
+  }
+  if (dirF!=="all") { list = list.filter(function(s){ return s.dir===dirF; }); }
+  if (sort==="dist") { list.sort(function(a,b){ return a.dist-b.dist; }); }
+  else if (sort==="fuel") { list.sort(function(a,b){ return fuelRT(a.dist)-fuelRT(b.dist); }); }
+  else { list.sort(function(a,b){ return a.name.localeCompare(b.name); }); }
+  var inRange = list.filter(function(s){ return fuelRT(s.dist)<=maxFuel; });
+  var oor = list.filter(function(s){ return fuelRT(s.dist)>maxFuel; });
+  var all = inRange.concat(oor);
+  document.getElementById("spotCount").textContent =
+    inRange.length+" spots within "+maxFuel+" gal one-way  ·  "+oor.length+" beyond filter (dimmed)";
+  var rows="";
+  for (var i=0;i<all.length;i++) {
+    var s=all[i]; var fr=fuelRT(s.dist); var dim=fr>maxFuel;
+    var fuelCol = fr>100?"color:var(--red)":fr>65?"color:var(--orange)":"";
+    rows+='<tr onclick="selectSpot(\''+s.name+'\')" style="'+(dim?"opacity:0.35;":"")+'">'+
+      '<td>'+(i+1)+'</td>'+
+      '<td><span class="spot-name">'+s.name+'</span>'+spotTag(s.type)+
+        '<span class="spot-coords">'+s.lat.toFixed(4)+'°N &nbsp;'+Math.abs(s.lon).toFixed(4)+'°W</span></td>'+
+      '<td>'+s.dist+' nm</td>'+
+      '<td style="color:var(--text2);">'+s.dir+'</td>'+
+      '<td style="'+fuelCol+'">'+fr+' gal</td>'+
+      '<td style="color:var(--text2);">'+fmtTransit(s.dist)+'</td>'+
+      '<td style="color:var(--text2);">'+s.type.toUpperCase()+'</td>'+
+      '</tr>';
+  }
+  document.getElementById("spot-tbody").innerHTML = rows;
+}
+function selectSpot(name) {
+  var s=null;
+  for (var i=0;i<SPOTS.length;i++) { if (SPOTS[i].name===name) { s=SPOTS[i]; break; } }
+  if (!s) { return; }
+  var p=getP(); var fr=fuelRT(s.dist);
+  var rem=p.tank-fr; var reserveGal=p.tank*p.reservePct/100;
+  var safe=rem>=reserveGal; var oor=fr>p.tank*(1-p.reservePct/100);
+  var html='<div class="two-col">'+
+    '<div>'+
+      '<div class="drow"><span class="dlabel">Spot</span><span class="dval">'+s.name+'</span></div>'+
+      '<div class="drow"><span class="dlabel">Coordinates</span><span class="dval">'+s.lat.toFixed(4)+'°N, '+Math.abs(s.lon).toFixed(4)+'°W</span></div>'+
+      '<div class="drow"><span class="dlabel">Distance</span><span class="dval gold">'+s.dist+' nm from '+p.depart+'</span></div>'+
+      '<div class="drow"><span class="dlabel">Direction</span><span class="dval">'+s.dir+'</span></div>'+
+      '<div class="drow"><span class="dlabel">Transit @ '+p.speed+' mph</span><span class="dval">'+fmtTransit(s.dist)+' one-way</span></div>'+
+    '</div>'+
+    '<div>'+
+      '<div class="drow"><span class="dlabel">Round-trip fuel</span><span class="dval '+(fr>100?"r":fr>65?"o":"")+'">'+fr+' gal</span></div>'+
+      '<div class="drow"><span class="dlabel">Fuel remaining</span><span class="dval '+(safe?"g":"r")+'">'+rem.toFixed(1)+' gal</span></div>'+
+      '<div class="drow"><span class="dlabel">Reserve status</span><span class="dval '+(safe?"g":"r")+'">'+(safe?"Safe ✓":"UNSAFE ✗")+'</span></div>'+
+      '<div class="drow"><span class="dlabel">Est. fuel cost</span><span class="dval">~$'+Math.round(fr*p.costpg)+'</span></div>'+
+    '</div></div>';
+  if (oor) { html+='<div class="danger-bar" style="margin-top:10px;">⛔ Beyond usable fuel range. Reference only.</div>'; }
+  document.getElementById("spot-detail-content").innerHTML=html;
+  document.getElementById("spot-detail").style.display="block";
+  document.getElementById("spot-detail").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function calcFuel() {
+  var p=getP();
+  var dist=parseInt(document.getElementById("distSlider").value);
+  var stops=parseInt(document.getElementById("stopsSlider").value);
+  var load=parseInt(document.getElementById("loadSlider").value);
+  document.getElementById("distOut").textContent=dist+" nm";
+  document.getElementById("stopsOut").textContent=stops;
+  document.getElementById("loadOut").textContent=load+" gal";
+  var total=dist*2*stops; var burn=Math.round(total/p.mpg);
+  var rem=load-burn; var reserveGal=Math.round(p.tank*p.reservePct/100);
+  var buf=rem-reserveGal;
+  var mins=Math.round(dist/p.speed*60); var h=Math.floor(mins/60); var mn=mins%60;
+  document.getElementById("fc-total").textContent=total+" nm RT";
+  document.getElementById("fc-burn").textContent=burn+" gal";
+  document.getElementById("fc-remain").textContent=rem+" gal";
+  document.getElementById("fc-time").textContent=(h>0?h+"h ":"")+mn+"m one-way";
+  document.getElementById("fc-cost").textContent="$"+Math.round(burn*p.costpg);
+  var st=document.getElementById("fuel-status"); var bel=document.getElementById("fc-buf");
+  if (rem<reserveGal) {
+    st.className="status-box status-danger"; st.textContent="✗ UNSAFE — exceeds "+p.reservePct+"% reserve.";
+    bel.textContent=Math.abs(buf)+" gal short"; bel.className="dval r";
+  } else if (buf<p.tank*0.1) {
+    st.className="status-box status-mg"; st.textContent="⚠ MARGINAL — reserve barely adequate.";
+    bel.textContent=buf+" gal above reserve (tight)"; bel.className="dval o";
+  } else {
+    st.className="status-box status-safe"; st.textContent="✓ Safe — "+buf+" gal above "+p.reservePct+"% reserve";
+    bel.textContent=buf+" gal above reserve"; bel.className="dval g";
+  }
+}
+function buildFuelTable() {
+  var p=getP();
+  var top=SPOTS.filter(function(s){ return s.dist>0&&s.type!=="mhb"; }).slice(0,30);
+  var rows="";
+  for (var i=0;i<top.length;i++) {
+    var s=top[i]; var fr=fuelRT(s.dist);
+    rows+='<tr><td>'+s.name+'</td><td style="color:var(--text2);">'+s.dist+'</td>'+
+      '<td style="'+(fr>p.tank*0.5?"color:var(--orange)":"")+'">'+fr+' gal</td>'+
+      '<td style="color:var(--text2);">$'+Math.round(fr*p.costpg)+'</td>'+
+      '<td style="color:var(--text2);">'+fmtTransit(s.dist)+'</td>'+
+      '<td style="color:var(--text2);">'+s.dir+'</td></tr>';
+  }
+  document.getElementById("fuel-tbody").innerHTML=rows;
+}
+function buildFuelMetrics() {
+  var p=getP();
+  var usable=Math.round(p.tank*(1-p.reservePct/100));
+  var reserveGal=Math.round(p.tank*p.reservePct/100);
+  var safeRange=Math.round(usable*p.mpg/2);
+  document.getElementById("fuel-metrics").innerHTML=
+    '<div class="metric"><div class="metric-label">Tank</div><div class="metric-value">'+p.tank+'<span class="metric-unit"> gal</span></div></div>'+
+    '<div class="metric"><div class="metric-label">'+p.reservePct+'% Reserve</div><div class="metric-value">'+reserveGal+'<span class="metric-unit"> gal</span></div></div>'+
+    '<div class="metric"><div class="metric-label">Usable</div><div class="metric-value">'+usable+'<span class="metric-unit"> gal</span></div></div>'+
+    '<div class="metric"><div class="metric-label">Efficiency</div><div class="metric-value">'+p.mpg+'<span class="metric-unit"> mpg</span></div></div>'+
+    '<div class="metric"><div class="metric-label">Safe one-way</div><div class="metric-value">'+safeRange+'<span class="metric-unit"> nm</span></div></div>'+
+    '<div class="metric"><div class="metric-label">Cruise speed</div><div class="metric-value">'+p.speed+'<span class="metric-unit"> mph</span></div></div>';
+}
+function buildProfileDisplay() {
+  var p=getP();
+  var usable=Math.round(p.tank*(1-p.reservePct/100));
+  var reserveGal=Math.round(p.tank*p.reservePct/100);
+  var safeRange=Math.round(usable*p.mpg/2);
+  document.getElementById("profile-display").innerHTML=
+    '<div class="drow"><span class="dlabel">Vessel</span><span class="dval">'+p.vessel+'</span></div>'+
+    '<div class="drow"><span class="dlabel">Engines</span><span class="dval">'+p.engines+'</span></div>'+
+    '<div class="drow"><span class="dlabel">Speed / efficiency</span><span class="dval">'+p.speed+' mph · '+p.mpg+' mpg</span></div>'+
+    '<div class="drow"><span class="dlabel">Tank / usable</span><span class="dval">'+p.tank+' gal / <span style="color:var(--green)">'+usable+' gal</span></span></div>'+
+    '<div class="drow"><span class="dlabel">Safe one-way range</span><span class="dval g">'+safeRange+' nm</span></div>'+
+    '<div class="drow"><span class="dlabel">NO-GO limits</span><span class="dval r">Seas &gt;'+p.maxSeas+'ft · Wind &gt;'+p.maxWind+'kt</span></div>';
+  document.getElementById("hdr-title").textContent="Offshore Trip Planner — "+p.depart;
+  document.getElementById("hdr-sub").textContent=p.vessel+" · "+p.engines+" · "+p.mpg+" mpg · "+p.tank+" gal · "+p.speed+" mph";
+  document.getElementById("setup-active").innerHTML=
+    '<div class="drow"><span class="dlabel">Vessel</span><span class="dval">'+p.vessel+'</span></div>'+
+    '<div class="drow"><span class="dlabel">Engines</span><span class="dval">'+p.engines+'</span></div>'+
+    '<div class="drow"><span class="dlabel">Tank / usable / reserve</span><span class="dval">'+p.tank+' / '+usable+' / '+reserveGal+' gal</span></div>'+
+    '<div class="drow"><span class="dlabel">Efficiency / speed</span><span class="dval">'+p.mpg+' mpg @ '+p.speed+' mph</span></div>'+
+    '<div class="drow"><span class="dlabel">Fuel cost</span><span class="dval">$'+p.costpg.toFixed(2)+'/gal</span></div>'+
+    '<div class="drow"><span class="dlabel">Departure</span><span class="dval">'+p.depart+'</span></div>'+
+    '<div class="drow"><span class="dlabel">Forecast point</span><span class="dval">'+(p.fcLat||25.72)+'°N, '+Math.abs(p.fcLon||-82.65)+'°W</span></div>'+
+    '<div class="drow"><span class="dlabel">NO-GO triggers</span><span class="dval r">Seas &gt;'+p.maxSeas+'ft · Wind &gt;'+p.maxWind+'kt</span></div>';
+}
+function populateSetupFields() {
+  var p=loadProfile();
+  document.getElementById("s-vessel").value=p.vessel;
+  document.getElementById("s-engines").value=p.engines;
+  document.getElementById("s-tank").value=p.tank;
+  document.getElementById("s-reserve").value=p.reservePct;
+  document.getElementById("s-mpg").value=p.mpg;
+  document.getElementById("s-speed").value=p.speed;
+  document.getElementById("s-costpg").value=p.costpg;
+  document.getElementById("s-depart").value=p.depart;
+  document.getElementById("s-fclat").value=p.fcLat||25.72;
+  document.getElementById("s-fclon").value=p.fcLon||-82.65;
+  document.getElementById("s-maxseas").value=p.maxSeas;
+  document.getElementById("s-maxwind").value=p.maxWind;
+}
+function saveSetup() {
+  var p={
+    vessel:document.getElementById("s-vessel").value||DEFAULT_PROFILE.vessel,
+    engines:document.getElementById("s-engines").value||DEFAULT_PROFILE.engines,
+    tank:parseFloat(document.getElementById("s-tank").value)||DEFAULT_PROFILE.tank,
+    reservePct:parseFloat(document.getElementById("s-reserve").value)||DEFAULT_PROFILE.reservePct,
+    mpg:parseFloat(document.getElementById("s-mpg").value)||DEFAULT_PROFILE.mpg,
+    speed:parseFloat(document.getElementById("s-speed").value)||DEFAULT_PROFILE.speed,
+    costpg:parseFloat(document.getElementById("s-costpg").value)||DEFAULT_PROFILE.costpg,
+    depart:document.getElementById("s-depart").value||DEFAULT_PROFILE.depart,
+    fcLat:parseFloat(document.getElementById("s-fclat").value)||DEFAULT_PROFILE.fcLat,
+    fcLon:parseFloat(document.getElementById("s-fclon").value)||DEFAULT_PROFILE.fcLon,
+    maxSeas:parseFloat(document.getElementById("s-maxseas").value)||DEFAULT_PROFILE.maxSeas,
+    maxWind:parseFloat(document.getElementById("s-maxwind").value)||DEFAULT_PROFILE.maxWind
+  };
+  try { localStorage.setItem("boatProfile",JSON.stringify(p)); } catch(e) {}
+  applyAll();
+  fetchWeatherAndRender();
+  document.getElementById("setup-saved").style.display="block";
+  setTimeout(function(){ document.getElementById("setup-saved").style.display="none"; },3000);
+}
+function applyAll() {
+  buildProfileDisplay();
+  buildFuelMetrics();
+  buildFuelTable();
+  filterSpots();
+  buildSolunarTable();
+  var p=getP();
+  document.getElementById("loadSlider").max=p.tank;
+  if (parseInt(document.getElementById("loadSlider").value)>p.tank) {
+    document.getElementById("loadSlider").value=p.tank;
+  }
+  calcFuel();
+}
+// ============================================================
+// INIT — runs on page load
+// ============================================================
+populateSetupFields();
+applyAll();
+fetchWeatherAndRender();
+</script>
+</body>
+</html>

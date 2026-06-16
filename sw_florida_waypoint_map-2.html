@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SW Florida Offshore Waypoint Map — All 133 Spots</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1b2a;color:#e8f4fd;height:100vh;display:flex;flex-direction:column;}
+  .topbar{background:#0a1628;border-bottom:1px solid rgba(0,191,255,0.25);padding:10px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap;}
+  .topbar-title{font-size:15px;font-weight:700;color:#00bfff;}
+  .topbar-sub{font-size:11px;color:#8ab4cc;}
+  .badges{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;}
+  .badge{font-size:10px;padding:3px 9px;border-radius:12px;border:1px solid rgba(0,191,255,0.3);color:#00bfff;background:rgba(0,191,255,0.08);white-space:nowrap;}
+  .badge.green{border-color:rgba(46,204,113,0.4);color:#2ecc71;background:rgba(46,204,113,0.08);}
+  .badge.red{border-color:rgba(231,76,60,0.4);color:#e74c3c;background:rgba(231,76,60,0.08);}
+  #map{flex:1;min-height:0;}
+  .info-panel{position:absolute;top:70px;right:12px;z-index:1000;background:rgba(10,22,40,0.97);border:1px solid rgba(0,191,255,0.25);border-radius:10px;width:265px;backdrop-filter:blur(8px);box-shadow:0 8px 32px rgba(0,0,0,0.5);}
+  .info-hdr{padding:9px 14px;border-bottom:1px solid rgba(0,191,255,0.15);font-size:11px;font-weight:600;color:#00bfff;text-transform:uppercase;letter-spacing:0.06em;}
+  .info-body{padding:11px 14px;font-size:12px;line-height:1.85;}
+  .ir{display:flex;justify-content:space-between;}
+  .il{color:#8ab4cc;}
+  .iv{color:#e8f4fd;font-weight:500;}
+  .iv.g{color:#2ecc71;} .iv.o{color:#f39c12;} .iv.r{color:#e74c3c;} .iv.gold{color:#f5a623;}
+  .hint{font-size:11px;color:#5a7a8a;margin-top:8px;line-height:1.5;}
+  .sep{height:1px;background:rgba(0,191,255,0.1);margin:7px 0;}
+  .ring-ctrl{position:absolute;top:70px;left:12px;z-index:1000;background:rgba(10,22,40,0.93);border:1px solid rgba(0,191,255,0.2);border-radius:8px;padding:10px 13px;font-size:11px;}
+  .ring-ctrl-title{color:#5a7a8a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:7px;font-size:10px;}
+  .rtog{display:flex;align-items:center;gap:6px;margin-bottom:3px;cursor:pointer;color:#8ab4cc;}
+  .rtog input{accent-color:#00bfff;}
+  .legend{position:absolute;bottom:58px;left:12px;z-index:1000;background:rgba(10,22,40,0.93);border:1px solid rgba(0,191,255,0.2);border-radius:8px;padding:9px 13px;font-size:11px;line-height:1.9;}
+  .li{display:flex;align-items:center;gap:7px;}
+  .ld{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .ltitle{font-size:10px;color:#5a7a8a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;}
+  .filter-bar{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:1000;background:rgba(10,22,40,0.95);border:1px solid rgba(0,191,255,0.25);border-radius:24px;padding:7px 14px;display:flex;gap:8px;align-items:center;font-size:11px;backdrop-filter:blur(8px);white-space:nowrap;flex-wrap:wrap;justify-content:center;}
+  .fb{padding:3px 11px;border-radius:12px;border:1px solid rgba(0,191,255,0.25);background:transparent;color:#8ab4cc;cursor:pointer;font-size:11px;transition:all 0.2s;}
+  .fb.active,.fb:hover{background:rgba(0,191,255,0.15);color:#00bfff;border-color:rgba(0,191,255,0.5);}
+  .fl{color:#5a7a8a;font-size:10px;}
+  @media(max-width:600px){.info-panel{width:210px;right:6px;}.ring-ctrl{font-size:10px;padding:8px 10px;}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div>
+    <div class="topbar-title">⚓ SW Florida Offshore Waypoint Map</div>
+    <div class="topbar-sub">All 133 GPX waypoints · Caxambas Pass origin · Tap any spot to measure</div>
+  </div>
+  <div class="badges">
+    <span class="badge green">133 Waypoints</span>
+    <span class="badge">Tap to Measure</span>
+    <span class="badge red">4 Beyond Fuel Range</span>
+  </div>
+</div>
+<div id="map"></div>
+
+<div class="info-panel" id="infoPanel">
+  <div class="info-hdr">📍 Waypoint info</div>
+  <div class="info-body" id="infoPanelBody">
+    <div class="hint">Tap any waypoint for distance from Caxambas Pass, fuel estimate, bearing and transit time.<br><br>Tap anywhere on open water to measure that exact GPS point.</div>
+    <div class="sep"></div>
+    <div class="ir"><span class="il">Total waypoints</span><span class="iv">133</span></div>
+    <div class="ir"><span class="il">Within fuel range</span><span class="iv g">129 spots</span></div>
+    <div class="ir"><span class="il">Beyond range (MHB)</span><span class="iv r">4 spots ~107nm</span></div>
+    <div class="ir"><span class="il">Safe one-way range</span><span class="iv g">~120nm</span></div>
+    <div class="ir"><span class="il">Farthest reachable</span><span class="iv">SL23APH 70nm</span></div>
+  </div>
+</div>
+
+<div class="ring-ctrl" id="ringCtrl">
+  <div class="ring-ctrl-title">Distance rings</div>
+  <label class="rtog"><input type="checkbox" id="r20" checked onchange="toggleRing('r20')"> 20 nm</label>
+  <label class="rtog"><input type="checkbox" id="r40" checked onchange="toggleRing('r40')"> 40 nm</label>
+  <label class="rtog"><input type="checkbox" id="r60" checked onchange="toggleRing('r60')"> 60 nm</label>
+  <label class="rtog"><input type="checkbox" id="r80" onchange="toggleRing('r80')"> 80 nm</label>
+  <label class="rtog"><input type="checkbox" id="r100" onchange="toggleRing('r100')"> 100 nm</label>
+  <label class="rtog"><input type="checkbox" id="r120" onchange="toggleRing('r120')"> 120 nm (safe limit)</label>
+</div>
+
+<div class="legend">
+  <div class="ltitle">Waypoint types</div>
+  <div class="li"><div class="ld" style="background:#00bfff;border:2px solid #fff;"></div> Caxambas / Home Port</div>
+  <div class="li"><div class="ld" style="background:#9b59b6;"></div> FLT / FLAT — flat/ledge</div>
+  <div class="li"><div class="ld" style="background:#00ccee;opacity:0.85;"></div> POT — structure/pot</div>
+  <div class="li"><div class="ld" style="background:#2ecc71;"></div> REEF / BFL — reef</div>
+  <div class="li"><div class="ld" style="background:#f5a623;"></div> JD — named grouper spots</div>
+  <div class="li"><div class="ld" style="background:#e74c3c;"></div> Tower / landmark</div>
+  <div class="li"><div class="ld" style="background:#e74c3c;border:2px dashed #fff;opacity:0.7;"></div> MHB — beyond fuel range</div>
+  <div class="li"><div class="ld" style="background:#8ab4cc;"></div> Other waypoints</div>
+</div>
+
+<div class="filter-bar">
+  <span class="fl">Show:</span>
+  <button class="fb active" onclick="doFilter('all',this)">All 133</button>
+  <button class="fb" onclick="doFilter('near',this)">≤30nm</button>
+  <button class="fb" onclick="doFilter('mid',this)">30–60nm</button>
+  <button class="fb" onclick="doFilter('far',this)">60nm+</button>
+  <button class="fb" onclick="doFilter('flt',this)">FLT</button>
+  <button class="fb" onclick="doFilter('pot',this)">POT</button>
+  <button class="fb" onclick="doFilter('reef',this)">Reef/BFL</button>
+  <button class="fb" onclick="doFilter('jd',this)">JD spots</button>
+  <button class="fb" onclick="doFilter('inrange',this)">In fuel range</button>
+</div>
+
+<script>
+const SPOTS = [{"name":"SLCAXE","lat":25.9037,"lon":-81.734267,"dist":0.0,"dir":"E","fuel":0.0,"mins":0,"type":"origin"},{"name":"Home Port","lat":25.93085,"lon":-81.70235,"dist":2.4,"dir":"NE","fuel":3.0,"mins":4,"type":"homeport"},{"name":"14MREEF1","lat":25.788467,"lon":-81.95135,"dist":13.6,"dir":"WSW","fuel":17.0,"mins":23,"type":"reef"},{"name":"SL6RFMOD","lat":25.9098,"lon":-81.986,"dist":13.6,"dir":"W","fuel":17.0,"mins":23,"type":"other"},{"name":"SL47FHB","lat":26.029617,"lon":-81.987017,"dist":15.6,"dir":"WNW","fuel":19.5,"mins":27,"type":"other"},{"name":"D-TOWER","lat":25.566667,"lon":-81.716667,"dist":20.3,"dir":"S","fuel":25.3,"mins":35,"type":"tower"},{"name":"SL25BRFB","lat":26.019817,"lon":-82.108117,"dist":21.3,"dir":"WNW","fuel":26.7,"mins":37,"type":"reef"},{"name":"9MBOB","lat":26.020083,"lon":-82.109467,"dist":21.4,"dir":"WNW","fuel":26.8,"mins":37,"type":"other"},{"name":"SL25CRFB","lat":26.02005,"lon":-82.109783,"dist":21.4,"dir":"WNW","fuel":26.8,"mins":37,"type":"reef"},{"name":"SL25ARFB","lat":26.022,"lon":-82.108183,"dist":21.4,"dir":"WNW","fuel":26.7,"mins":37,"type":"reef"},{"name":"SL25RFB","lat":26.020333,"lon":-82.108483,"dist":21.4,"dir":"WNW","fuel":26.7,"mins":37,"type":"reef"},{"name":"SL25CSTR","lat":26.020833,"lon":-82.107783,"dist":21.4,"dir":"WNW","fuel":26.7,"mins":37,"type":"other"},{"name":"SL25DRFB","lat":26.021417,"lon":-82.109917,"dist":21.5,"dir":"WNW","fuel":26.8,"mins":37,"type":"reef"},{"name":"SL7RKPL","lat":25.90315,"lon":-82.240783,"dist":27.4,"dir":"W","fuel":34.2,"mins":47,"type":"other"},{"name":"SL37FLT","lat":25.43485,"lon":-81.8065,"dist":28.4,"dir":"S","fuel":35.5,"mins":49,"type":"flt"},{"name":"SL39FLT","lat":25.4349,"lon":-81.815867,"dist":28.5,"dir":"S","fuel":35.6,"mins":49,"type":"flt"},{"name":"SL36FLT","lat":25.433733,"lon":-81.8084,"dist":28.5,"dir":"S","fuel":35.6,"mins":49,"type":"flt"},{"name":"SL40FLT","lat":25.4338,"lon":-81.821883,"dist":28.6,"dir":"S","fuel":35.8,"mins":49,"type":"flt"},{"name":"SL38FLT","lat":25.4327,"lon":-81.808867,"dist":28.6,"dir":"S","fuel":35.7,"mins":49,"type":"flt"},{"name":"SL28FLT","lat":25.418967,"lon":-81.989533,"dist":32.2,"dir":"SSW","fuel":40.3,"mins":55,"type":"flt"},{"name":"SL27FLT","lat":25.41945,"lon":-81.98885,"dist":32.2,"dir":"SSW","fuel":40.2,"mins":55,"type":"flt"},{"name":"SL26AFLT","lat":25.417733,"lon":-81.985683,"dist":32.2,"dir":"SSW","fuel":40.2,"mins":55,"type":"flt"},{"name":"SL26FLT","lat":25.417233,"lon":-81.986317,"dist":32.2,"dir":"SSW","fuel":40.3,"mins":55,"type":"flt"},{"name":"SL31FLT","lat":25.418,"lon":-81.99675,"dist":32.4,"dir":"SSW","fuel":40.5,"mins":56,"type":"flt"},{"name":"SL30FLT","lat":25.418917,"lon":-81.996933,"dist":32.4,"dir":"SSW","fuel":40.5,"mins":56,"type":"flt"},{"name":"SL32FLT","lat":25.416567,"lon":-81.996117,"dist":32.5,"dir":"SSW","fuel":40.6,"mins":56,"type":"flt"},{"name":"SL29FLT","lat":25.416567,"lon":-81.994317,"dist":32.5,"dir":"SSW","fuel":40.6,"mins":56,"type":"flt"},{"name":"SL33FLT","lat":25.416483,"lon":-82.0086,"dist":32.8,"dir":"SSW","fuel":41.0,"mins":56,"type":"flt"},{"name":"RTWR","lat":25.466667,"lon":-82.101833,"dist":32.9,"dir":"SW","fuel":41.2,"mins":56,"type":"tower"},{"name":"SL34FLT","lat":25.41605,"lon":-82.010183,"dist":32.9,"dir":"SSW","fuel":41.1,"mins":56,"type":"flt"},{"name":"SL35FLT","lat":25.415967,"lon":-82.015617,"dist":33.0,"dir":"SSW","fuel":41.3,"mins":57,"type":"flt"},{"name":"SL26LDG","lat":26.064867,"lon":-82.409417,"dist":37.7,"dir":"WNW","fuel":47.1,"mins":65,"type":"other"},{"name":"SL1FLT","lat":25.620783,"lon":-82.396933,"dist":39.7,"dir":"WSW","fuel":49.6,"mins":68,"type":"flt"},{"name":"SL4POT","lat":25.594767,"lon":-82.421333,"dist":41.5,"dir":"WSW","fuel":51.9,"mins":71,"type":"pot"},{"name":"JDGRP9","lat":25.982733,"lon":-82.50075,"dist":41.7,"dir":"W","fuel":52.1,"mins":71,"type":"jd"},{"name":"JDGRP8","lat":25.883717,"lon":-82.505967,"dist":41.7,"dir":"W","fuel":52.1,"mins":71,"type":"jd"},{"name":"JDGRP7","lat":25.880717,"lon":-82.511383,"dist":42.0,"dir":"W","fuel":52.5,"mins":72,"type":"jd"},{"name":"JDGRP6","lat":25.780317,"lon":-82.5726,"dist":45.9,"dir":"W","fuel":57.4,"mins":79,"type":"jd"},{"name":"SL19FLT","lat":25.190867,"lon":-82.093533,"dist":47.0,"dir":"SSW","fuel":58.8,"mins":81,"type":"flt"},{"name":"SL9BFLT","lat":25.764833,"lon":-82.600533,"dist":47.5,"dir":"W","fuel":59.4,"mins":82,"type":"flt"},{"name":"SL9EFLT","lat":25.76495,"lon":-82.603083,"dist":47.7,"dir":"W","fuel":59.6,"mins":82,"type":"flt"},{"name":"SL9CFLT","lat":25.7601,"lon":-82.602133,"dist":47.7,"dir":"W","fuel":59.6,"mins":82,"type":"flt"},{"name":"SL9DFLT","lat":25.76015,"lon":-82.6065,"dist":47.9,"dir":"W","fuel":59.9,"mins":82,"type":"flt"},{"name":"SL9AFLT","lat":25.763217,"lon":-82.610217,"dist":48.1,"dir":"W","fuel":60.1,"mins":82,"type":"flt"},{"name":"SL9FLT","lat":25.761433,"lon":-82.613883,"dist":48.3,"dir":"W","fuel":60.4,"mins":83,"type":"flt"},{"name":"SL41FLT","lat":25.521367,"lon":-82.532433,"dist":48.9,"dir":"WSW","fuel":61.1,"mins":84,"type":"flt"},{"name":"SL8BFLT","lat":25.8154,"lon":-82.635533,"dist":49.0,"dir":"W","fuel":61.2,"mins":84,"type":"flt"},{"name":"P-Tower","lat":25.116667,"lon":-82.0,"dist":49.4,"dir":"SSW","fuel":61.7,"mins":85,"type":"tower"},{"name":"SL8FLT","lat":25.815683,"lon":-82.642467,"dist":49.4,"dir":"W","fuel":61.7,"mins":85,"type":"flt"},{"name":"SL18RBFL","lat":25.122717,"lon":-82.02665,"dist":49.5,"dir":"SSW","fuel":61.9,"mins":85,"type":"bfl"},{"name":"SL18AFLT","lat":25.123883,"lon":-82.033417,"dist":49.5,"dir":"SSW","fuel":61.9,"mins":85,"type":"flt"},{"name":"SL18FLT","lat":25.124717,"lon":-82.032617,"dist":49.5,"dir":"SSW","fuel":61.9,"mins":85,"type":"flt"},{"name":"SL18PTH","lat":25.124467,"lon":-82.0325,"dist":49.5,"dir":"SSW","fuel":61.9,"mins":85,"type":"other"},{"name":"SL44BFLT","lat":25.673183,"lon":-82.614783,"dist":49.6,"dir":"WSW","fuel":62.0,"mins":85,"type":"flt"},{"name":"SL44AFLT","lat":25.6723,"lon":-82.614333,"dist":49.6,"dir":"WSW","fuel":62.0,"mins":85,"type":"flt"},{"name":"SL44FLT","lat":25.672117,"lon":-82.614833,"dist":49.6,"dir":"WSW","fuel":62.0,"mins":85,"type":"flt"},{"name":"SL44FGB","lat":25.671983,"lon":-82.614033,"dist":49.6,"dir":"WSW","fuel":61.9,"mins":85,"type":"fg"},{"name":"SL18CFLT","lat":25.122933,"lon":-82.034817,"dist":49.6,"dir":"SSW","fuel":62.0,"mins":85,"type":"flt"},{"name":"SL18BFLT","lat":25.123733,"lon":-82.03475,"dist":49.6,"dir":"SSW","fuel":62.0,"mins":85,"type":"flt"},{"name":"SL17ERBFL","lat":25.123517,"lon":-82.043367,"dist":49.7,"dir":"SSW","fuel":62.2,"mins":85,"type":"bfl"},{"name":"SL19RBFL","lat":25.122033,"lon":-82.037533,"dist":49.7,"dir":"SSW","fuel":62.2,"mins":85,"type":"bfl"},{"name":"SL8AFLT","lat":25.815883,"lon":-82.64885,"dist":49.7,"dir":"W","fuel":62.1,"mins":85,"type":"flt"},{"name":"SL19FRBFL","lat":25.12025,"lon":-82.0371,"dist":49.8,"dir":"SSW","fuel":62.3,"mins":85,"type":"bfl"},{"name":"SL19ERBFL","lat":25.1203,"lon":-82.035967,"dist":49.8,"dir":"SSW","fuel":62.2,"mins":85,"type":"bfl"},{"name":"SL19DRBFL","lat":25.121017,"lon":-82.03605,"dist":49.8,"dir":"SSW","fuel":62.2,"mins":85,"type":"bfl"},{"name":"SL19CRBFL","lat":25.1211,"lon":-82.0365,"dist":49.8,"dir":"SSW","fuel":62.2,"mins":85,"type":"bfl"},{"name":"SL19BRBFL","lat":25.12105,"lon":-82.0371,"dist":49.8,"dir":"SSW","fuel":62.2,"mins":85,"type":"bfl"},{"name":"SL19ARBFL","lat":25.121133,"lon":-82.038367,"dist":49.8,"dir":"SSW","fuel":62.2,"mins":85,"type":"bfl"},{"name":"SL17CRBFL","lat":25.12205,"lon":-82.0415,"dist":49.8,"dir":"SSW","fuel":62.2,"mins":85,"type":"bfl"},{"name":"SL17ARBFL","lat":25.121517,"lon":-82.04165,"dist":49.8,"dir":"SSW","fuel":62.3,"mins":85,"type":"bfl"},{"name":"SL17RBFL","lat":25.12285,"lon":-82.0425,"dist":49.8,"dir":"SSW","fuel":62.2,"mins":85,"type":"bfl"},{"name":"SL17DRBFL","lat":25.12105,"lon":-82.041533,"dist":49.9,"dir":"SSW","fuel":62.3,"mins":85,"type":"bfl"},{"name":"SL17BRBFL","lat":25.12015,"lon":-82.041517,"dist":49.9,"dir":"SSW","fuel":62.4,"mins":86,"type":"bfl"},{"name":"JDGRP2","lat":25.366733,"lon":-82.456167,"dist":50.7,"dir":"SW","fuel":63.3,"mins":87,"type":"jd"},{"name":"SL42AFLT","lat":25.40415,"lon":-82.493917,"dist":50.9,"dir":"SW","fuel":63.6,"mins":87,"type":"flt"},{"name":"FL42FLT","lat":25.403183,"lon":-82.49255,"dist":50.9,"dir":"SW","fuel":63.6,"mins":87,"type":"flt"},{"name":"SL43FLT","lat":25.401367,"lon":-82.499767,"dist":51.2,"dir":"SW","fuel":64.1,"mins":88,"type":"flt"},{"name":"SLFLAT1C","lat":25.62095,"lon":-82.643933,"dist":52.0,"dir":"WSW","fuel":65.0,"mins":89,"type":"flt"},{"name":"SLFLAT1B","lat":25.620433,"lon":-82.643417,"dist":52.0,"dir":"WSW","fuel":65.0,"mins":89,"type":"flt"},{"name":"SLFLAT1A","lat":25.621,"lon":-82.642933,"dist":52.0,"dir":"WSW","fuel":65.0,"mins":89,"type":"flt"},{"name":"SLFLAT1","lat":25.620783,"lon":-82.6436,"dist":52.0,"dir":"WSW","fuel":65.0,"mins":89,"type":"flt"},{"name":"SL3POT","lat":25.634783,"lon":-82.6601,"dist":52.6,"dir":"WSW","fuel":65.7,"mins":90,"type":"pot"},{"name":"SL2DFLT","lat":25.633767,"lon":-82.661133,"dist":52.7,"dir":"WSW","fuel":65.8,"mins":90,"type":"flt"},{"name":"SL2CFLT","lat":25.633833,"lon":-82.66135,"dist":52.7,"dir":"WSW","fuel":65.8,"mins":90,"type":"flt"},{"name":"SL2BFLT","lat":25.6333,"lon":-82.66175,"dist":52.7,"dir":"WSW","fuel":65.9,"mins":90,"type":"flt"},{"name":"SL2AFLT","lat":25.63395,"lon":-82.6617,"dist":52.7,"dir":"WSW","fuel":65.9,"mins":90,"type":"flt"},{"name":"SL12AFLT","lat":25.725767,"lon":-82.68965,"dist":52.7,"dir":"WSW","fuel":65.9,"mins":90,"type":"flt"},{"name":"SL11FLT","lat":25.731667,"lon":-82.690083,"dist":52.7,"dir":"W","fuel":65.9,"mins":90,"type":"flt"},{"name":"SL2FLT","lat":25.633783,"lon":-82.661583,"dist":52.7,"dir":"WSW","fuel":65.9,"mins":90,"type":"flt"},{"name":"SL12CFLT","lat":25.725067,"lon":-82.691717,"dist":52.8,"dir":"WSW","fuel":66.1,"mins":91,"type":"flt"},{"name":"SL12BFLT","lat":25.726817,"lon":-82.690517,"dist":52.8,"dir":"WSW","fuel":66.0,"mins":90,"type":"flt"},{"name":"SL12FLT","lat":25.726867,"lon":-82.690533,"dist":52.8,"dir":"WSW","fuel":66.0,"mins":90,"type":"flt"},{"name":"SL2APOT","lat":25.632983,"lon":-82.666133,"dist":52.9,"dir":"WSW","fuel":66.2,"mins":91,"type":"pot"},{"name":"SL2POT","lat":25.63305,"lon":-82.66705,"dist":53.0,"dir":"WSW","fuel":66.2,"mins":91,"type":"pot"},{"name":"FG002","lat":25.603533,"lon":-82.65775,"dist":53.1,"dir":"WSW","fuel":66.4,"mins":91,"type":"fg"},{"name":"FG001","lat":25.603283,"lon":-82.657317,"dist":53.1,"dir":"WSW","fuel":66.3,"mins":91,"type":"fg"},{"name":"FG003","lat":25.603633,"lon":-82.659517,"dist":53.2,"dir":"WSW","fuel":66.5,"mins":91,"type":"fg"},{"name":"SL10AFLT","lat":25.728317,"lon":-82.69935,"dist":53.2,"dir":"W","fuel":66.5,"mins":91,"type":"flt"},{"name":"SL10FLT","lat":25.726767,"lon":-82.700017,"dist":53.3,"dir":"WSW","fuel":66.6,"mins":91,"type":"flt"},{"name":"SL14AFLT","lat":25.7365,"lon":-82.714133,"dist":53.9,"dir":"W","fuel":67.4,"mins":92,"type":"flt"},{"name":"SL14FLT","lat":25.73495,"lon":-82.714717,"dist":53.9,"dir":"W","fuel":67.4,"mins":92,"type":"flt"},{"name":"SL13AFLT","lat":25.726917,"lon":-82.7126,"dist":53.9,"dir":"W","fuel":67.4,"mins":92,"type":"flt"},{"name":"SL13FLT","lat":25.7251,"lon":-82.71205,"dist":53.9,"dir":"WSW","fuel":67.4,"mins":92,"type":"flt"},{"name":"JDGRP3","lat":25.359783,"lon":-82.5318,"dist":54.1,"dir":"SW","fuel":67.7,"mins":93,"type":"jd"},{"name":"CALIWRK","lat":25.358467,"lon":-82.53325,"dist":54.2,"dir":"SW","fuel":67.8,"mins":93,"type":"other"},{"name":"BRUCEST","lat":25.214667,"lon":-82.428483,"dist":55.9,"dir":"SW","fuel":69.9,"mins":96,"type":"other"},{"name":"JDSNGR1","lat":25.371183,"lon":-82.62325,"dist":57.8,"dir":"WSW","fuel":72.2,"mins":99,"type":"jd"},{"name":"JDGRP5","lat":25.371983,"lon":-82.623717,"dist":57.8,"dir":"WSW","fuel":72.2,"mins":99,"type":"jd"},{"name":"SL22FLT","lat":25.7517,"lon":-82.820433,"dist":59.4,"dir":"W","fuel":74.3,"mins":102,"type":"flt"},{"name":"SL16FLT","lat":25.7068,"lon":-82.853083,"dist":61.6,"dir":"W","fuel":77.0,"mins":106,"type":"flt"},{"name":"SL15FLT","lat":25.709667,"lon":-82.864267,"dist":62.2,"dir":"W","fuel":77.7,"mins":107,"type":"flt"},{"name":"SL15AFLT","lat":25.706083,"lon":-82.8659,"dist":62.3,"dir":"W","fuel":77.9,"mins":107,"type":"flt"},{"name":"SL21FLT","lat":25.917717,"lon":-82.89225,"dist":62.5,"dir":"W","fuel":78.2,"mins":107,"type":"flt"},{"name":"SL20AFLT","lat":25.9172,"lon":-82.897317,"dist":62.8,"dir":"W","fuel":78.5,"mins":108,"type":"flt"},{"name":"SL20FLT","lat":25.917783,"lon":-82.897433,"dist":62.8,"dir":"W","fuel":78.5,"mins":108,"type":"flt"},{"name":"SL20PTH","lat":25.91865,"lon":-82.8963,"dist":62.8,"dir":"W","fuel":78.4,"mins":108,"type":"other"},{"name":"SL21AFLT","lat":25.92865,"lon":-82.901383,"dist":63.0,"dir":"W","fuel":78.8,"mins":108,"type":"flt"},{"name":"JDGRP1","lat":25.371583,"lon":-82.79115,"dist":65.5,"dir":"WSW","fuel":81.9,"mins":112,"type":"jd"},{"name":"SL45AFLT","lat":25.408283,"lon":-82.879383,"dist":68.7,"dir":"WSW","fuel":85.9,"mins":118,"type":"flt"},{"name":"SL45FLT","lat":25.40855,"lon":-82.878733,"dist":68.7,"dir":"WSW","fuel":85.9,"mins":118,"type":"flt"},{"name":"SL46FLT","lat":25.406967,"lon":-82.891067,"dist":69.3,"dir":"WSW","fuel":86.7,"mins":119,"type":"flt"},{"name":"SL46BFLT_2","lat":25.4085,"lon":-82.893567,"dist":69.4,"dir":"WSW","fuel":86.8,"mins":119,"type":"flt"},{"name":"SL46AFLT","lat":25.408117,"lon":-82.892583,"dist":69.4,"dir":"WSW","fuel":86.7,"mins":119,"type":"flt"},{"name":"SL46BFLT","lat":25.406583,"lon":-82.8946,"dist":69.5,"dir":"WSW","fuel":86.9,"mins":119,"type":"flt"},{"name":"SL46APOT","lat":25.40825,"lon":-82.894967,"dist":69.5,"dir":"WSW","fuel":86.9,"mins":119,"type":"pot"},{"name":"SL46POT","lat":25.408233,"lon":-82.894333,"dist":69.5,"dir":"WSW","fuel":86.8,"mins":119,"type":"pot"},{"name":"SL23PH","lat":25.752333,"lon":-83.0127,"dist":69.7,"dir":"W","fuel":87.1,"mins":119,"type":"other"},{"name":"SL23FLT","lat":25.750133,"lon":-83.013333,"dist":69.7,"dir":"W","fuel":87.2,"mins":120,"type":"flt"},{"name":"SL23APH","lat":25.754583,"lon":-83.018767,"dist":70.0,"dir":"W","fuel":87.5,"mins":120,"type":"other"},{"name":"SL24BMHB","lat":25.949067,"lon":-83.71355,"dist":106.9,"dir":"W","fuel":133.6,"mins":183,"type":"mhb"},{"name":"SL24MHB","lat":25.948267,"lon":-83.71445,"dist":107.0,"dir":"W","fuel":133.7,"mins":183,"type":"mhb"},{"name":"SL25MHB","lat":25.9479,"lon":-83.7217,"dist":107.3,"dir":"W","fuel":134.2,"mins":184,"type":"mhb"},{"name":"SL24AMHB","lat":25.948133,"lon":-83.722,"dist":107.4,"dir":"W","fuel":134.2,"mins":184,"type":"mhb"}];
+
+const CAX=[25.9037,-81.734267];
+
+const map=L.map('map',{center:[25.68,-82.5],zoom:8,zoomControl:true});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:17}).addTo(map);
+
+// Distance rings
+function makeRing(nm,color,label){
+  const pts=[];
+  for(let i=0;i<=360;i+=2){
+    const r=i*Math.PI/180;
+    const dlat=(nm/60)*Math.cos(r);
+    const dlon=(nm/60)*Math.sin(r)/Math.cos(CAX[0]*Math.PI/180);
+    pts.push([CAX[0]+dlat,CAX[1]+dlon]);
+  }
+  const ring=L.polyline(pts,{color,weight:1.5,dashArray:'6,5',opacity:0.55});
+  const lbl=L.marker([CAX[0]+(nm/60)*0.99,CAX[1]],{icon:L.divIcon({className:'',html:`<span style="font-size:10px;color:${color};opacity:0.85;background:rgba(10,22,40,0.75);padding:1px 5px;border-radius:3px;">${label}</span>`,iconAnchor:[20,8]})});
+  return{ring,lbl};
+}
+const RINGS={
+  r20:makeRing(20,'#2ecc71','20nm'),
+  r40:makeRing(40,'#00bfff','40nm'),
+  r60:makeRing(60,'#f5a623','60nm'),
+  r80:makeRing(80,'#e74c3c','80nm'),
+  r100:makeRing(100,'#9b59b6','100nm'),
+  r120:makeRing(120,'#ff69b4','120nm safe limit'),
+};
+function toggleRing(id){const{ring,lbl}=RINGS[id];if(document.getElementById(id).checked){ring.addTo(map);lbl.addTo(map);}else{map.removeLayer(ring);map.removeLayer(lbl);}}
+['r20','r40','r60'].forEach(id=>{RINGS[id].ring.addTo(map);RINGS[id].lbl.addTo(map);});
+
+function mcolor(type){
+  if(type==='origin'||type==='homeport') return '#00bfff';
+  if(type==='tower') return '#e74c3c';
+  if(type==='mhb') return '#e74c3c';
+  if(type==='flt') return '#9b59b6';
+  if(type==='pot') return '#00ccee';
+  if(type==='reef'||type==='bfl') return '#2ecc71';
+  if(type==='jd') return '#f5a623';
+  if(type==='fg') return '#2ecc71';
+  return '#8ab4cc';
+}
+
+function fmtT(m){if(m===0)return'Departure';const h=Math.floor(m/60),mn=m%60;return h>0?`${h}h ${mn}m`:`${mn} min`;}
+
+let allMarkers=[],activeLine=null;
+
+SPOTS.forEach(s=>{
+  const col=mcolor(s.type);
+  const sz=s.type==='origin'||s.type==='homeport'?14:s.type==='mhb'?8:9;
+  const border=s.type==='origin'?'3px solid #fff':s.type==='mhb'?'2px dashed rgba(255,255,255,0.5)':'1.5px solid rgba(255,255,255,0.4)';
+  const opacity=s.type==='mhb'?'0.5':'1';
+  const icon=L.divIcon({className:'',html:`<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${col};border:${border};opacity:${opacity};box-shadow:0 0 5px ${col}55;cursor:pointer;" title="${s.name}"></div>`,iconAnchor:[sz/2,sz/2]});
+  const m=L.marker([s.lat,s.lon],{icon,title:s.name});
+  m.on('click',()=>selectSpot(s));
+  m.spotData=s;
+  m.addTo(map);
+  allMarkers.push(m);
+});
+
+// Caxambas label
+L.marker(CAX,{icon:L.divIcon({className:'',html:`<div style="margin-top:13px;font-size:10px;color:#00bfff;background:rgba(10,22,40,0.85);padding:2px 7px;border-radius:4px;white-space:nowrap;border:1px solid rgba(0,191,255,0.35);">⚓ Caxambas Pass</div>`,iconAnchor:[55,0]})}).addTo(map);
+
+function selectSpot(s){
+  if(activeLine){map.removeLayer(activeLine);activeLine=null;}
+  if(s.type!=='origin'&&s.type!=='homeport'){
+    activeLine=L.polyline([CAX,[s.lat,s.lon]],{color:'#00bfff',weight:2,dashArray:'8,5',opacity:0.75}).addTo(map);
+  }
+  const inRange=s.fuel<=150;
+  const fc=s.fuel<50?'g':s.fuel<90?'iv':s.fuel>120?'r':'o';
+  const rem=(200-s.fuel).toFixed(1);
+  const resOk=(200-s.fuel)>=50;
+  let html='';
+  if(s.type==='origin'||s.type==='homeport'){
+    html=`<div class="ir"><span class="il">Name</span><span class="iv">${s.name}</span></div>
+    <div class="ir"><span class="il">Role</span><span class="iv g">${s.type==='origin'?'Departure point':'Home port'}</span></div>
+    <div class="ir"><span class="il">Coordinates</span><span class="iv">${s.lat.toFixed(4)}°N, ${Math.abs(s.lon).toFixed(4)}°W</span></div>
+    <div class="hint">This is your base. Tap any waypoint to see its distance and fuel from here.</div>`;
+  } else {
+    html=`<div class="ir"><span class="il">Spot</span><span class="iv">${s.name}</span></div>
+    <div class="ir"><span class="il">Coordinates</span><span class="iv">${s.lat.toFixed(4)}°N, ${Math.abs(s.lon).toFixed(4)}°W</span></div>
+    <div class="ir"><span class="il">Distance</span><span class="iv gold">${s.dist} nm from Caxambas</span></div>
+    <div class="ir"><span class="il">Direction</span><span class="iv">${s.dir} of Caxambas</span></div>
+    <div class="sep"></div>
+    <div class="ir"><span class="il">Round-trip fuel</span><span class="iv ${fc}">${s.fuel} gal</span></div>
+    <div class="ir"><span class="il">Fuel remaining</span><span class="iv ${resOk?'g':'r'}">${rem} gal ${resOk?'✓':'✗'}</span></div>
+    <div class="ir"><span class="il">Reserve status</span><span class="iv ${resOk?'g':'r'}">${resOk?'Safe ✓':'UNSAFE ✗'}</span></div>
+    <div class="ir"><span class="il">Transit time</span><span class="iv">${fmtT(s.mins)} @ 35mph</span></div>
+    <div class="ir"><span class="il">Est. fuel cost</span><span class="iv">~$${Math.round(s.fuel*4.5)}</span></div>
+    ${!inRange?'<div class="hint" style="color:#e74c3c;">⚠ This spot exceeds your 25% reserve threshold. Would need top-off or is reference only.</div>':''}`;
+  }
+  document.getElementById('infoPanelBody').innerHTML=html;
+}
+
+// Tap water = measure
+map.on('click',function(e){
+  const lat2=e.latlng.lat,lon2=e.latlng.lng;
+  const R=3440.065;
+  const p1=CAX[0]*Math.PI/180,p2=lat2*Math.PI/180;
+  const dp=(lat2-CAX[0])*Math.PI/180,dl=(lon2-CAX[1])*Math.PI/180;
+  const a=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
+  const dist=R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  const dx=Math.sin(dl)*Math.cos(p2),dy=Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl);
+  const brg=((Math.atan2(dx,dy)*180/Math.PI)+360)%360;
+  const dirs=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+  const dir=dirs[Math.round(brg/22.5)%16];
+  const fuel=(dist*2/1.6).toFixed(1);
+  const mins=Math.round(dist/35*60);
+  const h=Math.floor(mins/60),mn=mins%60;
+  if(activeLine){map.removeLayer(activeLine);activeLine=null;}
+  activeLine=L.polyline([CAX,[lat2,lon2]],{color:'#f5a623',weight:2,dashArray:'6,4',opacity:0.8}).addTo(map);
+  document.getElementById('infoPanelBody').innerHTML=
+    `<div style="font-size:11px;color:#f5a623;margin-bottom:6px;">📐 Custom point measurement</div>
+    <div class="ir"><span class="il">Location</span><span class="iv">${lat2.toFixed(4)}°N, ${Math.abs(lon2).toFixed(4)}°W</span></div>
+    <div class="ir"><span class="il">Distance</span><span class="iv gold">${dist.toFixed(1)} nm</span></div>
+    <div class="ir"><span class="il">Direction</span><span class="iv">${dir} of Caxambas</span></div>
+    <div class="sep"></div>
+    <div class="ir"><span class="il">Round-trip fuel</span><span class="iv">${fuel} gal</span></div>
+    <div class="ir"><span class="il">Transit time</span><span class="iv">${h>0?h+'h ':''} ${mn}m @ 35mph</span></div>
+    <div class="hint">Tap a waypoint marker for its exact data, or tap open water to measure any GPS point from Caxambas.</div>`;
+});
+
+function doFilter(mode,btn){
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  allMarkers.forEach(m=>{
+    const s=m.spotData;
+    let show=true;
+    if(mode==='near') show=s.dist<=30;
+    else if(mode==='mid') show=s.dist>30&&s.dist<=60;
+    else if(mode==='far') show=s.dist>60;
+    else if(mode==='flt') show=s.type==='flt'||s.type==='origin';
+    else if(mode==='pot') show=s.type==='pot'||s.type==='origin';
+    else if(mode==='reef') show=s.type==='reef'||s.type==='bfl'||s.type==='fg'||s.type==='origin';
+    else if(mode==='jd') show=s.type==='jd'||s.type==='origin';
+    else if(mode==='inrange') show=s.fuel<=150;
+    if(show)m.addTo(map);else map.removeLayer(m);
+  });
+}
+</script>
+
+<style>
+  .editor-panel{position:absolute;top:70px;right:12px;z-index:1001;background:rgba(10,22,40,0.97);border:1px solid rgba(0,191,255,0.25);border-radius:10px;width:270px;backdrop-filter:blur(8px);box-shadow:0 8px 32px rgba(0,0,0,0.5);display:none;}
+  .ep-hdr{padding:9px 14px;border-bottom:1px solid rgba(0,191,255,0.15);font-size:11px;font-weight:600;color:#00bfff;text-transform:uppercase;letter-spacing:0.06em;display:flex;justify-content:space-between;align-items:center;}
+  .ep-close{cursor:pointer;color:#5a7a8a;font-size:16px;}
+  .ep-body{padding:12px 14px;}
+  .ep-field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+  .ep-field label{font-size:10px;color:#8ab4cc;text-transform:uppercase;letter-spacing:0.05em;}
+  .ep-field input,.ep-field select{background:#1a2e45;border:1px solid rgba(0,191,255,0.25);border-radius:5px;color:#e8f4fd;padding:6px 9px;font-size:13px;}
+  .ep-field input:focus,.ep-field select:focus{outline:none;border-color:#00bfff;}
+  .ep-btn{width:100%;padding:8px;border-radius:6px;border:none;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:6px;}
+  .ep-save{background:rgba(0,191,255,0.2);color:#00bfff;border:1px solid rgba(0,191,255,0.4);}
+  .ep-save:hover{background:rgba(0,191,255,0.35);}
+  .ep-del{background:rgba(231,76,60,0.15);color:#e74c3c;border:1px solid rgba(231,76,60,0.3);}
+  .ep-del:hover{background:rgba(231,76,60,0.3);}
+  .ep-export{background:rgba(46,204,113,0.15);color:#2ecc71;border:1px solid rgba(46,204,113,0.3);}
+  .ep-export:hover{background:rgba(46,204,113,0.25);}
+  .ep-coords{font-size:11px;color:#5a7a8a;margin-bottom:10px;line-height:1.5;}
+  .add-btn{position:absolute;top:70px;left:12px;z-index:1001;background:rgba(10,22,40,0.93);border:1px solid rgba(0,191,255,0.25);border-radius:8px;padding:9px 13px;font-size:12px;cursor:pointer;color:#00bfff;display:flex;align-items:center;gap:6px;}
+  .add-btn.active{background:rgba(0,191,255,0.15);border-color:rgba(0,191,255,0.5);}
+  .custom-list{max-height:120px;overflow-y:auto;margin-top:8px;}
+  .citem{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,191,255,0.08);font-size:11px;}
+  .citem-name{color:#e8f4fd;}
+  .citem-del{color:#e74c3c;cursor:pointer;font-size:14px;padding:0 4px;}
+</style>
+
+<!-- ADD WAYPOINT BUTTON -->
+<div class="add-btn" id="addBtn" onclick="toggleAddMode()" title="Add a waypoint by tapping the map or entering coordinates">
+  ➕ Add waypoint
+</div>
+
+<!-- EDITOR PANEL -->
+<div class="editor-panel" id="editorPanel">
+  <div class="ep-hdr">
+    <span id="ep-title">Add waypoint</span>
+    <span class="ep-close" onclick="closeEditor()">✕</span>
+  </div>
+  <div class="ep-body">
+
+    <!-- INPUT METHOD TABS -->
+    <div style="display:flex;gap:0;margin-bottom:12px;border:1px solid rgba(0,191,255,0.2);border-radius:6px;overflow:hidden;">
+      <button id="tab-map" onclick="switchInputTab('map')" style="flex:1;padding:6px 4px;font-size:11px;font-weight:600;background:rgba(0,191,255,0.15);color:#00bfff;border:none;cursor:pointer;">🗺 Tap map</button>
+      <button id="tab-coords" onclick="switchInputTab('coords')" style="flex:1;padding:6px 4px;font-size:11px;font-weight:600;background:transparent;color:#8ab4cc;border:none;border-left:1px solid rgba(0,191,255,0.2);cursor:pointer;">📋 Enter coords</button>
+    </div>
+
+    <!-- TAP MAP MODE -->
+    <div id="mode-map">
+      <div class="ep-coords" id="ep-coords">Tap anywhere on the map to place a waypoint pin.</div>
+    </div>
+
+    <!-- ENTER COORDS MODE -->
+    <div id="mode-coords" style="display:none;">
+      <div class="ep-field">
+        <label>Latitude (decimal degrees N)</label>
+        <input type="number" id="ep-lat" placeholder="e.g. 25.7648" step="0.0001" min="24" max="27">
+      </div>
+      <div class="ep-field">
+        <label>Longitude (decimal degrees W)</label>
+        <input type="number" id="ep-lon" placeholder="e.g. -82.6005 or 82.6005" step="0.0001" min="-85" max="-80">
+      </div>
+      <div class="ep-field">
+        <label>— or paste both at once —</label>
+        <input type="text" id="ep-paste" placeholder="25.7648, -82.6005 or 25°45.89'N 82°36.03'W" oninput="parsePasted(this.value)">
+      </div>
+      <div class="ep-coords" id="ep-coords-manual" style="min-height:32px;"></div>
+      <button class="ep-btn ep-save" style="margin-bottom:8px;" onclick="placeFromCoords()">📍 Place on map</button>
+    </div>
+
+    <div class="ep-field" style="margin-top:4px;">
+      <label>Waypoint name</label>
+      <input type="text" id="ep-name" placeholder="e.g. MY-LEDGE-1" maxlength="30">
+    </div>
+    <div class="ep-field">
+      <label>Type</label>
+      <select id="ep-type">
+        <option value="flt">FLT — flat / ledge</option>
+        <option value="pot">POT — pot / structure</option>
+        <option value="reef">Reef / wreck</option>
+        <option value="jd">Named grouper spot</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="ep-field">
+      <label>Notes (optional)</label>
+      <input type="text" id="ep-notes" placeholder="e.g. 90ft, good snapper">
+    </div>
+    <button class="ep-btn ep-save" onclick="saveCustomWaypoint()">💾 Save waypoint</button>
+    <button class="ep-btn ep-export" onclick="exportGPX()">📥 Export custom as GPX</button>
+    <div style="font-size:11px;color:#5a7a8a;margin-top:8px;margin-bottom:4px;">Saved custom waypoints</div>
+    <div class="custom-list" id="custom-list"></div>
+  </div>
+</div>
+
+<script>
+// ===== CUSTOM WAYPOINT EDITOR =====
+let addMode = false;
+let pendingLatLng = null;
+let pendingMarker = null;
+let customWaypoints = [];
+let inputTab = 'map';
+
+function switchInputTab(tab) {
+  inputTab = tab;
+  document.getElementById('mode-map').style.display = tab === 'map' ? 'block' : 'none';
+  document.getElementById('mode-coords').style.display = tab === 'coords' ? 'block' : 'none';
+  document.getElementById('tab-map').style.background = tab === 'map' ? 'rgba(0,191,255,0.15)' : 'transparent';
+  document.getElementById('tab-map').style.color = tab === 'map' ? '#00bfff' : '#8ab4cc';
+  document.getElementById('tab-coords').style.background = tab === 'coords' ? 'rgba(0,191,255,0.15)' : 'transparent';
+  document.getElementById('tab-coords').style.color = tab === 'coords' ? '#00bfff' : '#8ab4cc';
+  if (tab === 'map' && !addMode) {
+    addMode = true;
+    map.getContainer().style.cursor = 'crosshair';
+    document.getElementById('addBtn').classList.add('active');
+    document.getElementById('addBtn').textContent = '🎯 Tap map to place…';
+  }
+  if (tab === 'coords') {
+    addMode = false;
+    map.getContainer().style.cursor = '';
+    document.getElementById('addBtn').classList.remove('active');
+    document.getElementById('addBtn').innerHTML = '➕ Add waypoint';
+  }
+}
+
+// Parse pasted coordinate string into decimal lat/lon
+function parsePasted(str) {
+  if (!str.trim()) { document.getElementById('ep-coords-manual').textContent = ''; return; }
+  let lat = null, lon = null;
+
+  // Try decimal: "25.7648, -82.6005" or "25.7648 -82.6005"
+  let m = str.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
+  if (m) {
+    lat = parseFloat(m[1]);
+    lon = parseFloat(m[2]);
+    // If lon is positive and likely W Gulf coords, negate it
+    if (lon > 0 && lon > 70) lon = -lon;
+  }
+
+  // Try DMS: 25°45.888'N 82°36.030'W  or  25-45.888N 82-36.030W
+  if (lat === null) {
+    const dms = str.match(/(\d+)[°\-](\d+\.?\d*)['']?\s*([NS])[,\s]+(\d+)[°\-](\d+\.?\d*)['']?\s*([EW])/i);
+    if (dms) {
+      lat = parseFloat(dms[1]) + parseFloat(dms[2]) / 60;
+      if (dms[3].toUpperCase() === 'S') lat = -lat;
+      lon = parseFloat(dms[4]) + parseFloat(dms[5]) / 60;
+      if (dms[6].toUpperCase() === 'W') lon = -lon;
+    }
+  }
+
+  // Try DD MM.mmm format without symbols: "25 45.888 N 82 36.030 W"
+  if (lat === null) {
+    const ddmm = str.match(/(\d+)\s+(\d+\.?\d*)\s*([NS])\s+(\d+)\s+(\d+\.?\d*)\s*([EW])/i);
+    if (ddmm) {
+      lat = parseFloat(ddmm[1]) + parseFloat(ddmm[2]) / 60;
+      if (ddmm[3].toUpperCase() === 'S') lat = -lat;
+      lon = parseFloat(ddmm[4]) + parseFloat(ddmm[5]) / 60;
+      if (ddmm[6].toUpperCase() === 'W') lon = -lon;
+    }
+  }
+
+  if (lat !== null && lon !== null && !isNaN(lat) && !isNaN(lon)) {
+    document.getElementById('ep-lat').value = lat.toFixed(6);
+    document.getElementById('ep-lon').value = lon.toFixed(6);
+    const info = calcFromLatLon(lat, lon);
+    document.getElementById('ep-coords-manual').innerHTML =
+      `<span style="color:#2ecc71;">✓ Parsed: ${lat.toFixed(4)}°N, ${Math.abs(lon).toFixed(4)}°W · ${info.dist}nm ${info.dir}</span>`;
+  } else {
+    document.getElementById('ep-coords-manual').innerHTML =
+      `<span style="color:#e74c3c;">⚠ Could not parse — try: 25.7648, -82.6005</span>`;
+  }
+}
+
+function calcFromLatLon(lat2, lon2) {
+  const CAX = [25.9037, -81.734267];
+  const R = 3440.065;
+  const p1 = CAX[0]*Math.PI/180, p2 = lat2*Math.PI/180;
+  const dp = (lat2-CAX[0])*Math.PI/180, dl = (lon2-CAX[1])*Math.PI/180;
+  const a = Math.sin(dp/2)**2 + Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
+  const dist = Math.round(R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))*10)/10;
+  const dx = Math.sin(dl)*Math.cos(p2), dy = Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl);
+  const brg = ((Math.atan2(dx,dy)*180/Math.PI)+360)%360;
+  const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+  const dir = dirs[Math.round(brg/22.5)%16];
+  const fuel = Math.round(dist*2/1.6*10)/10;
+  return { dist, dir, fuel };
+}
+
+function placeFromCoords() {
+  let lat = parseFloat(document.getElementById('ep-lat').value);
+  let lon = parseFloat(document.getElementById('ep-lon').value);
+  if (isNaN(lat) || isNaN(lon)) {
+    document.getElementById('ep-coords-manual').innerHTML = '<span style="color:#e74c3c;">⚠ Enter valid lat/lon values first.</span>';
+    return;
+  }
+  // Auto-negate lon if user entered positive W longitude
+  if (lon > 0 && lon > 70) lon = -lon;
+  if (lat < 20 || lat > 30 || lon < -90 || lon > -70) {
+    document.getElementById('ep-coords-manual').innerHTML = '<span style="color:#e74c3c;">⚠ Coordinates outside SW Florida area.</span>';
+    return;
+  }
+  setAndShowPending(lat, lon);
+  map.panTo([lat, lon]);
+}
+
+function setAndShowPending(lat, lon) {
+  if (pendingMarker) map.removeLayer(pendingMarker);
+  const icon = L.divIcon({className:'',html:`<div style="width:13px;height:13px;border-radius:50%;background:#f5a623;border:2px solid #fff;box-shadow:0 0 10px #f5a623aa;"></div>`,iconAnchor:[7,7]});
+  pendingMarker = L.marker([lat, lon], {icon}).addTo(map);
+  const info = calcFromLatLon(lat, lon);
+  pendingLatLng = { lat, lng: lon, dist: info.dist, dir: info.dir, fuel: info.fuel };
+  const coordStr = `${lat.toFixed(4)}°N, ${Math.abs(lon).toFixed(4)}°W · ${info.dist}nm ${info.dir} · ~${info.fuel} gal RT`;
+  document.getElementById('ep-coords').textContent = coordStr;
+  document.getElementById('ep-coords-manual').innerHTML = `<span style="color:#2ecc71;">✓ Placed: ${coordStr}</span>`;
+}
+
+function loadCustomWaypoints() {
+  try { customWaypoints = JSON.parse(localStorage.getItem('customWaypoints') || '[]'); } catch(e) { customWaypoints = []; }
+  renderCustomMarkers();
+  renderCustomList();
+}
+
+function saveCustomWaypoints() {
+  try { localStorage.setItem('customWaypoints', JSON.stringify(customWaypoints)); } catch(e) {}
+}
+
+let customMarkers = [];
+function renderCustomMarkers() {
+  customMarkers.forEach(m => map.removeLayer(m));
+  customMarkers = [];
+  customWaypoints.forEach(w => {
+    const icon = L.divIcon({className:'',html:`<div style="width:11px;height:11px;border-radius:50%;background:#f5a623;border:2px solid #fff;box-shadow:0 0 8px #f5a62388;cursor:pointer;" title="${w.name}"></div>`,iconAnchor:[6,6]});
+    const m = L.marker([w.lat, w.lon], {icon, title: w.name});
+    m.on('click', () => selectSpot({name:w.name,lat:w.lat,lon:w.lon,dist:w.dist,dir:w.dir,fuel:w.fuel,type:w.type||'other'}));
+    m.addTo(map);
+    customMarkers.push(m);
+  });
+}
+
+function renderCustomList() {
+  const el = document.getElementById('custom-list');
+  if (!customWaypoints.length) {
+    el.innerHTML = '<div style="color:#5a7a8a;font-size:11px;padding:4px 0;">No custom waypoints saved yet.</div>';
+    return;
+  }
+  el.innerHTML = customWaypoints.map((w,i) =>
+    `<div class="citem">
+       <span class="citem-name" onclick="map.panTo([${w.lat},${w.lon}]);map.setZoom(11);" style="cursor:pointer;" title="Zoom to spot">📍 ${w.name} <span style="color:#5a7a8a;">${w.dist}nm</span></span>
+       <span class="citem-del" onclick="deleteCustom(${i})" title="Delete">✕</span>
+     </div>`
+  ).join('');
+}
+
+function deleteCustom(i) {
+  if (!confirm(`Delete waypoint "${customWaypoints[i].name}"?`)) return;
+  customWaypoints.splice(i, 1);
+  saveCustomWaypoints();
+  renderCustomMarkers();
+  renderCustomList();
+}
+
+function toggleAddMode() {
+  addMode = !addMode;
+  const btn = document.getElementById('addBtn');
+  if (addMode) {
+    btn.classList.add('active');
+    btn.textContent = '🎯 Tap map to place…';
+    map.getContainer().style.cursor = 'crosshair';
+    document.getElementById('editorPanel').style.display = 'block';
+    switchInputTab('map');
+  } else {
+    btn.classList.remove('active');
+    btn.innerHTML = '➕ Add waypoint';
+    map.getContainer().style.cursor = '';
+    if (pendingMarker) { map.removeLayer(pendingMarker); pendingMarker = null; }
+    pendingLatLng = null;
+  }
+}
+
+function closeEditor() {
+  document.getElementById('editorPanel').style.display = 'none';
+  if (pendingMarker) { map.removeLayer(pendingMarker); pendingMarker = null; }
+  pendingLatLng = null;
+  addMode = false;
+  document.getElementById('addBtn').classList.remove('active');
+  document.getElementById('addBtn').innerHTML = '➕ Add waypoint';
+  map.getContainer().style.cursor = '';
+}
+
+// Map click handler for tap-to-place mode
+map.on('click', function(e) {
+  if (!addMode || inputTab !== 'map') return;
+  setAndShowPending(e.latlng.lat, e.latlng.lng);
+});
+
+function saveCustomWaypoint() {
+  if (!pendingLatLng) {
+    alert(inputTab === 'map' ? 'Tap a location on the map first.' : 'Click "Place on map" with valid coordinates first.');
+    return;
+  }
+  const name = document.getElementById('ep-name').value.trim();
+  if (!name) { alert('Please enter a name for this waypoint.'); document.getElementById('ep-name').focus(); return; }
+  const w = {
+    name,
+    lat: Math.round(pendingLatLng.lat * 1e6) / 1e6,
+    lon: Math.round(pendingLatLng.lng * 1e6) / 1e6,
+    dist: pendingLatLng.dist,
+    dir: pendingLatLng.dir,
+    fuel: pendingLatLng.fuel,
+    type: document.getElementById('ep-type').value,
+    notes: document.getElementById('ep-notes').value.trim()
+  };
+  customWaypoints.push(w);
+  saveCustomWaypoints();
+  renderCustomMarkers();
+  renderCustomList();
+  if (pendingMarker) { map.removeLayer(pendingMarker); pendingMarker = null; }
+  pendingLatLng = null;
+  document.getElementById('ep-name').value = '';
+  document.getElementById('ep-notes').value = '';
+  document.getElementById('ep-paste').value = '';
+  document.getElementById('ep-lat').value = '';
+  document.getElementById('ep-lon').value = '';
+  document.getElementById('ep-coords').textContent = 'Waypoint saved! Tap map for another, or close.';
+  document.getElementById('ep-coords-manual').textContent = '';
+}
+
+function exportGPX() {
+  if (!customWaypoints.length) { alert('No custom waypoints to export yet.'); return; }
+  let gpx = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="SW Florida Offshore Planner">\n`;
+  customWaypoints.forEach(w => {
+    gpx += `  <wpt lat="${w.lat}" lon="${w.lon}">\n    <name>${w.name}</name>\n    <desc>${w.notes||''} | ${w.dist}nm from Caxambas | ${w.type}</desc>\n  </wpt>\n`;
+  });
+  gpx += `</gpx>`;
+  const blob = new Blob([gpx], {type:'application/gpx+xml'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'custom_waypoints.gpx';
+  a.click();
+}
+
+loadCustomWaypoints();
+</script>
+</body>
+</html>
