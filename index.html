@@ -632,7 +632,7 @@ function weatherCodeDesc(code) {
 function scoreDay(waveM, windKt, precipPct, weatherCode, solScore, isOutgoing, dayIndex) {
   var p = getP();
   var waveFt = waveHeightFt(waveM);
-  var isThunder = weatherCode >= 95;
+  var isThunder = weatherCode >= 99;
   // Hard NO-GO
   if (waveFt > p.maxSeas || windKt > p.maxWind || isThunder) {
     return { score: 0, nogo: true, nogoReason: isThunder ? "Thunderstorm risk" : (waveFt > p.maxSeas ? "Seas " + waveFt + "ft exceed limit" : "Wind " + Math.round(windKt) + "kt exceeds limit") };
@@ -642,7 +642,7 @@ function scoreDay(waveM, windKt, precipPct, weatherCode, solScore, isOutgoing, d
   // Wind score (15%)
   var windScore = Math.max(0, 100 - (windKt / p.maxWind) * 100) * 0.15;
   // Storm risk (10%)
-  var stormScore = (1 - precipPct/100) * 100 * 0.10;
+  var tstmPenalty = (weatherCode >= 95 && weatherCode < 99) ? 30 : 0; var stormScore = Math.max(0, (1 - precipPct/100) * 100 - tstmPenalty) * 0.10;
   // Solunar (25%)
   var solScore25 = (solScore / 5) * 100 * 0.25;
   // Tide (15%)
@@ -690,7 +690,7 @@ function renderForecast(marine, forecast) {
     var condStr = windDir(windDeg) + " " + Math.round(windKt) + "kt";
     if (gustKt > windKt + 5) { condStr += " g" + Math.round(gustKt) + "kt"; }
     if (precipPct > 30) { condStr += " · " + precipPct + "% rain"; }
-    if (wCode >= 95) { condStr += " · ⚡ tstm"; }
+    if (wCode >= 95 && wCode < 99) { condStr += " · ⚡ tstm risk"; } else if (wCode >= 99) { condStr += " · ⛈ severe tstm"; }
     var waveStr = waveFt.toFixed(1) + "ft @ " + Math.round(wavePeriod) + "s";
     var conf = d < 3 ? '<span class="confidence-high">●</span>' : d < 5 ? '<span class="confidence-med">●</span>' : '<span class="confidence-low">●</span>';
     var scoreHtml;
