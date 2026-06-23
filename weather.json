@@ -1,0 +1,8 @@
+{
+  "updated": "2026-06-23T13:33:13.516811Z",
+  "lat": 25.41,
+  "lon": -82.53,
+  "forecast": null,
+  "marine": null,
+  "_note": "This file is auto-updated every 6 hours by GitHub Actions. If forecast/marine are null, the Action has not run yet - trigger it manually from the Actions tab."
+}
