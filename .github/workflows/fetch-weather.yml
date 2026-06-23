@@ -1,0 +1,71 @@
+name: Fetch Weather Data
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour on the hour
+  workflow_dispatch:       # Manual trigger from Actions tab anytime
+
+jobs:
+  fetch-weather:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch weather from Open-Meteo
+        run: |
+          python3 << 'PYEOF'
+          import urllib.request, json, datetime
+
+          lat, lon = 25.41, -82.53
+
+          forecast_url = (
+            "https://api.open-meteo.com/v1/forecast?"
+            f"latitude={lat}&longitude={lon}"
+            "&daily=wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,"
+            "precipitation_probability_max,weather_code"
+            "&hourly=wind_speed_10m,wind_direction_10m,precipitation_probability,weather_code"
+            "&wind_speed_unit=kn&timezone=America/New_York&forecast_days=7"
+          )
+
+          marine_url = (
+            "https://marine-api.open-meteo.com/v1/marine?"
+            f"latitude={lat}&longitude={lon}"
+            "&daily=wave_height_max,wave_period_max,wave_direction_dominant"
+            "&timezone=America/New_York&forecast_days=7"
+          )
+
+          result = {
+            "updated": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "lat": lat, "lon": lon,
+            "forecast": None, "marine": None
+          }
+
+          try:
+            req = urllib.request.urlopen(forecast_url, timeout=15)
+            result["forecast"] = json.loads(req.read())
+            print("Forecast OK")
+          except Exception as e:
+            print(f"Forecast error: {e}")
+
+          try:
+            req2 = urllib.request.urlopen(marine_url, timeout=15)
+            result["marine"] = json.loads(req2.read())
+            print("Marine OK")
+          except Exception as e:
+            print(f"Marine error: {e}")
+
+          with open("weather.json", "w") as f:
+            json.dump(result, f)
+          print("weather.json written at", result["updated"])
+          PYEOF
+
+      - name: Commit weather data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add weather.json
+          git diff --staged --quiet || git commit -m "Weather update $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
