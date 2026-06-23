@@ -8,7 +8,11 @@
 :root{--bg:#0d1b2a;--bg2:#112236;--bg3:#1a2e45;--bg4:#1e3552;--accent:#00bfff;--gold:#f5a623;--green:#2ecc71;--red:#e74c3c;--orange:#f39c12;--text:#e8f4fd;--text2:#8ab4cc;--text3:#5a7a8a;--border:rgba(0,191,255,0.15);--border2:rgba(0,191,255,0.3);}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-.header{background:#0a1628;border-bottom:1px solid var(--border2);padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap;}
+.navbar{background:#0a1628;border-bottom:1px solid rgba(0,191,255,0.1);padding:6px 20px;display:flex;align-items:center;justify-content:flex-end;gap:10px;}
+.navbar span{font-size:11px;color:var(--text3);}
+.navbar a{background:rgba(0,191,255,0.12);border:1px solid rgba(0,191,255,0.3);border-radius:6px;color:#00bfff;font-size:12px;font-weight:600;padding:5px 13px;text-decoration:none;}
+.navbar a:hover{background:rgba(0,191,255,0.22);}
+.header{background:#0a1628;border-bottom:1px solid var(--border2);padding:14px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .htitle{font-size:18px;font-weight:700;color:var(--accent);}
 .hsub{font-size:11px;color:var(--text2);margin-top:2px;}
 .hbadge{margin-left:auto;background:rgba(0,191,255,0.1);border:1px solid var(--border2);border-radius:20px;padding:3px 11px;font-size:11px;color:var(--accent);}
@@ -16,7 +20,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tabbar button{padding:10px 16px;font-size:13px;font-weight:500;color:var(--text2);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;}
 .tabbar button:hover{color:var(--text);background:rgba(0,191,255,0.05);}
 .tabbar button.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,191,255,0.07);}
-.panel{display:none;padding:16px 20px;max-width:1080px;margin:0 auto;}
+.panel{display:none;padding:16px 20px;max-width:1100px;margin:0 auto;}
 .panel.active{display:block;}
 .card{background:rgba(17,34,54,0.97);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:14px;}
 .card-title{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px;}
@@ -26,7 +30,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .metric-value{font-size:20px;font-weight:700;color:var(--text);}
 .metric-unit{font-size:11px;color:var(--text2);font-weight:400;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-@media(max-width:640px){.two-col{grid-template-columns:1fr;}}
+@media(max-width:660px){.two-col{grid-template-columns:1fr;}}
 .drow{display:flex;justify-content:space-between;padding:3px 0;font-size:13px;}
 .dlabel{color:var(--text3);}.dval{color:var(--text);font-weight:500;}
 .dval.g{color:var(--green);}.dval.o{color:var(--orange);}.dval.r{color:var(--red);}.dval.gold{color:var(--gold);}
@@ -36,26 +40,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pill-no{background:rgba(231,76,60,0.15);color:var(--red);border:1px solid rgba(231,76,60,0.3);}
 .stars{color:var(--gold);font-size:13px;letter-spacing:-1px;}
 .stars-off{color:var(--text3);font-size:13px;letter-spacing:-1px;}
-.forecast-table{width:100%;border-collapse:collapse;font-size:12px;}
-.forecast-table th{padding:7px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);border-bottom:1px solid var(--border2);text-align:left;white-space:nowrap;}
-.forecast-table td{padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
-.forecast-table tr:last-child td{border-bottom:none;}
-.forecast-table tr:hover td{background:rgba(0,191,255,0.04);}
-.day-name{font-weight:700;font-size:13px;}.day-date{font-size:10px;color:var(--text2);}
-.sun-times{font-size:10px;color:var(--text3);margin-top:3px;}
-.info-bar{background:rgba(0,191,255,0.07);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--text2);margin-top:10px;line-height:1.6;}
-.warn-bar{background:rgba(243,156,18,0.07);border:1px solid rgba(243,156,18,0.3);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--orange);margin-top:10px;}
-.danger-bar{background:rgba(231,76,60,0.07);border:1px solid rgba(231,76,60,0.3);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--red);margin-top:10px;}
+/* FORECAST TABLE */
+.ftable{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed;}
+.ftable th{padding:7px 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text3);border-bottom:1px solid var(--border2);text-align:left;white-space:nowrap;}
+.ftable td{padding:9px 6px;border-bottom:1px solid var(--border);vertical-align:top;}
+.ftable tr:last-child td{border-bottom:none;}
+.ftable tr:hover td{background:rgba(0,191,255,0.03);}
+.ftable th:nth-child(1){width:72px;}
+.ftable th:nth-child(2){width:22%;}
+.ftable th:nth-child(3){width:80px;}
+.ftable th:nth-child(4){width:80px;}
+.ftable th:nth-child(5){width:18%;}
+.ftable th:nth-child(6){width:75px;}
+.ftable th:nth-child(7){width:95px;}
+.day-lbl{font-weight:700;font-size:13px;}
+.day-dt{font-size:10px;color:var(--text2);}
+.sun-block{font-size:10px;color:var(--text3);margin-top:3px;line-height:1.7;}
+/* TRIP ARC */
+.arc-box{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 13px;margin-bottom:10px;}
+.arc-title{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+.arc-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:12px;}
+.arc-time{width:90px;color:var(--text2);font-size:11px;}
+.arc-cond{flex:1;color:var(--text);}
+.arc-pill{font-size:11px;font-weight:600;padding:2px 9px;border-radius:12px;}
+.arc-go{background:rgba(46,204,113,0.15);color:var(--green);border:1px solid rgba(46,204,113,0.3);}
+.arc-warn{background:rgba(243,156,18,0.15);color:var(--orange);border:1px solid rgba(243,156,18,0.3);}
+.arc-no{background:rgba(231,76,60,0.15);color:var(--red);border:1px solid rgba(231,76,60,0.3);}
+.sb-advisory{background:rgba(243,156,18,0.08);border:1px solid rgba(243,156,18,0.25);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--orange);margin-top:8px;}
+/* WEIGHT BAR */
 .wbar{height:8px;border-radius:4px;overflow:hidden;display:flex;margin:8px 0;}
 .wseg{height:100%;}
 .wleg{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;}
 .wleg-item{display:flex;align-items:center;gap:5px;}
 .wleg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+/* BARS */
 .model-bar{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
 .model-name{width:58px;font-size:11px;color:var(--text2);}
 .bar-track{flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
 .bar-fill{height:100%;border-radius:3px;}
 .bar-val{width:50px;font-size:11px;color:var(--text2);text-align:right;}
+/* INFO BARS */
+.info-bar{background:rgba(0,191,255,0.07);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--text2);margin-top:10px;line-height:1.6;}
+.warn-bar{background:rgba(243,156,18,0.07);border:1px solid rgba(243,156,18,0.3);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--orange);margin-top:10px;}
+.danger-bar{background:rgba(231,76,60,0.07);border:1px solid rgba(231,76,60,0.3);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--red);margin-top:10px;}
+/* SPOTS */
 .spot-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;}
 .spot-controls label{color:var(--text2);}
 .spot-controls select,.spot-controls input[type=range]{background:var(--bg4);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:3px 7px;font-size:12px;}
@@ -73,6 +101,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .stag-reef{background:rgba(46,204,113,0.12);color:#82e0aa;border:1px solid rgba(46,204,113,0.25);}
 .stag-jd{background:rgba(245,166,35,0.15);color:var(--gold);border:1px solid rgba(245,166,35,0.3);}
 .stag-oor{background:rgba(231,76,60,0.15);color:var(--red);border:1px solid rgba(231,76,60,0.3);}
+/* SLIDERS */
 .slider-row{margin-bottom:13px;}
 .slider-row label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;}
 .slider-row input[type=range]{width:100%;accent-color:var(--accent);}
@@ -81,6 +110,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .status-safe{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.3);color:var(--green);}
 .status-mg{background:rgba(243,156,18,0.1);border:1px solid rgba(243,156,18,0.3);color:var(--orange);}
 .status-danger{background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);color:var(--red);}
+/* SETUP */
 .setup-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;}
 .setup-field{display:flex;flex-direction:column;gap:5px;}
 .setup-field label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;}
@@ -88,41 +118,45 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .setup-field input:focus,.setup-field select:focus{outline:none;border-color:var(--accent);}
 .save-btn{width:100%;margin-top:10px;padding:10px;background:rgba(0,191,255,0.15);border:1px solid var(--border2);border-radius:6px;color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;}
 .save-btn:hover{background:rgba(0,191,255,0.25);}
-.live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;margin-right:4px;vertical-align:middle;}
-.loading-spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:6px;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-@keyframes spin{to{transform:rotate(360deg)}}
-.confidence-high{color:var(--green);font-size:10px;}
-.confidence-med{color:var(--orange);font-size:10px;}
-.confidence-low{color:var(--text3);font-size:10px;}
-.refresh-btn{background:rgba(0,191,255,0.12);border:1px solid var(--border2);border-radius:6px;color:var(--accent);font-size:12px;padding:5px 12px;cursor:pointer;float:right;}
-.refresh-btn:hover{background:rgba(0,191,255,0.22);}
-select option{background:#1a2e45;}
-::-webkit-scrollbar{width:5px;height:5px;}
-::-webkit-scrollbar-track{background:var(--bg2);}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+/* SOL TABLE */
 .sol-table{width:100%;border-collapse:collapse;font-size:12px;}
 .sol-table th{padding:6px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);border-bottom:1px solid var(--border2);text-align:left;}
 .sol-table td{padding:8px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
 .sol-table tr:last-child td{border-bottom:none;}
+/* MISC */
+.live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;margin-right:4px;vertical-align:middle;}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:5px;}
+.refresh-btn{background:rgba(0,191,255,0.12);border:1px solid var(--border2);border-radius:6px;color:var(--accent);font-size:12px;padding:5px 12px;cursor:pointer;float:right;}
+.refresh-btn:hover{background:rgba(0,191,255,0.22);}
+.conf-high{color:var(--green);font-size:10px;}
+.conf-med{color:var(--orange);font-size:10px;}
+.conf-low{color:var(--text3);font-size:10px;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+select option{background:#1a2e45;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 </style>
 </head>
 <body>
 
+<!-- NAV -->
+<div class="navbar">
+  <span>SW Florida Offshore Tools</span>
+  <a href="./sw_florida_waypoint_map-2.html">🗺 Open Waypoint Map →</a>
+</div>
+
+<!-- HEADER -->
 <div class="header">
   <span style="font-size:24px;">⚓</span>
   <div>
     <div class="htitle" id="hdr-title">SW Florida Offshore Trip Planner</div>
     <div class="hsub" id="hdr-sub">Loading profile…</div>
   </div>
-  <div class="hbadge" id="weather-badge"><span class="loading-spinner"></span>Fetching live weather…</div>
+  <div class="hbadge" id="weather-badge"><span class="spinner"></span>Fetching live weather…</div>
 </div>
 
-
-<div style="background:#0a1628;border-bottom:1px solid rgba(0,191,255,0.1);padding:6px 20px;display:flex;align-items:center;justify-content:flex-end;gap:10px;">
-  <span style="font-size:11px;color:var(--text3);">SW Florida Offshore Tools</span>
-  <a href="./sw_florida_waypoint_map-2.html" style="background:rgba(0,191,255,0.12);border:1px solid rgba(0,191,255,0.3);border-radius:6px;color:#00bfff;font-size:12px;font-weight:600;padding:5px 13px;text-decoration:none;">🗺 Open Waypoint Map →</a>
-</div>
 <div class="tabbar">
   <button class="active" onclick="showPanel('forecast',this)">📅 7-Day Scores</button>
   <button onclick="showPanel('weather',this)">🌊 Forecast</button>
@@ -132,53 +166,65 @@ select option{background:#1a2e45;}
   <button onclick="showPanel('setup',this)">⚙️ Boat Setup</button>
 </div>
 
-<!-- FORECAST -->
+<!-- ===== FORECAST ===== -->
 <div id="panel-forecast" class="panel active">
   <div class="card">
     <div class="card-title">
-      Scoring — weather &amp; seas primary (60%)
-      <button class="refresh-btn" onclick="fetchWeatherAndRender()">↻ Refresh weather</button>
+      Scoring weights — weather &amp; seas primary
+      <button class="refresh-btn" onclick="fetchWeatherAndRender()">↻ Refresh</button>
     </div>
     <div class="wbar">
       <div class="wseg" style="width:35%;background:#e74c3c;"></div>
-      <div class="wseg" style="width:15%;background:#f39c12;"></div>
-      <div class="wseg" style="width:10%;background:#c0392b;"></div>
-      <div class="wseg" style="width:25%;background:#f5a623;"></div>
-      <div class="wseg" style="width:15%;background:#00bfff;"></div>
+      <div class="wseg" style="width:35%;background:#f39c12;"></div>
+      <div class="wseg" style="width:15%;background:#c0392b;"></div>
+      <div class="wseg" style="width:10%;background:#f5a623;"></div>
+      <div class="wseg" style="width:5%;background:#00bfff;"></div>
     </div>
     <div class="wleg">
       <div class="wleg-item"><div class="wleg-dot" style="background:#e74c3c;"></div>Seas 35%</div>
-      <div class="wleg-item"><div class="wleg-dot" style="background:#f39c12;"></div>Wind 15%</div>
-      <div class="wleg-item"><div class="wleg-dot" style="background:#c0392b;"></div>Storm risk 10%</div>
-      <div class="wleg-item"><div class="wleg-dot" style="background:#f5a623;"></div>Solunar 25%</div>
-      <div class="wleg-item"><div class="wleg-dot" style="background:#00bfff;"></div>Tide 15%</div>
+      <div class="wleg-item"><div class="wleg-dot" style="background:#f39c12;"></div>Wind 35%</div>
+      <div class="wleg-item"><div class="wleg-dot" style="background:#c0392b;"></div>Storm risk 15%</div>
+      <div class="wleg-item"><div class="wleg-dot" style="background:#f5a623;"></div>Solunar 10%</div>
+      <div class="wleg-item"><div class="wleg-dot" style="background:#00bfff;"></div>Tide 5%</div>
     </div>
     <div class="info-bar" id="weather-source-note" style="margin-top:8px;">
-      <span class="loading-spinner"></span>Fetching live data from Open-Meteo Marine API…
+      <span class="spinner"></span>Fetching from Open-Meteo Marine API at fishing grounds (~25.41°N, 82.53°W)…
     </div>
   </div>
+
   <div class="card">
-    <div class="card-title">7-day trip scores — live forecast</div>
+    <div class="card-title">7-day trip scores — live forecast · departure at nautical dawn · return by 4:00pm</div>
     <div style="overflow-x:auto;">
-      <table class="forecast-table" id="forecast-table">
+      <table class="ftable" id="forecast-table">
         <thead>
           <tr>
-            <th>Date</th><th>Conditions</th><th>Seas</th><th>Wind</th><th>Solunar / Sun</th><th>Tide</th><th>Score</th>
+            <th>Date</th>
+            <th>Morning conditions</th>
+            <th>Seas</th>
+            <th>Wind</th>
+            <th>Solunar / Times</th>
+            <th>Tide</th>
+            <th>Score</th>
           </tr>
         </thead>
         <tbody id="forecast-tbody">
-          <tr><td colspan="7" style="padding:20px;text-align:center;color:var(--text2);">
-            <span class="loading-spinner"></span>Loading live weather data…
-          </td></tr>
+          <tr><td colspan="7" style="padding:20px;text-align:center;color:var(--text2);"><span class="spinner"></span>Loading live weather…</td></tr>
         </tbody>
       </table>
     </div>
-    <div id="forecast-nogo-note" style="display:none;" class="warn-bar"></div>
+    <div id="nogo-note" style="display:none;" class="danger-bar"></div>
   </div>
+
+  <!-- TRIP ARC -->
+  <div class="card" id="trip-arc-card" style="display:none;">
+    <div class="card-title">🕐 Trip arc — select a day above to see departure → return window</div>
+    <div id="trip-arc-content"></div>
+  </div>
+
   <div class="two-col">
     <div class="card">
-      <div class="card-title">Best picks <span id="best-picks-range" style="font-size:10px;color:var(--text3);font-weight:400;"></span></div>
-      <div id="best-picks-content" style="font-size:13px;color:var(--text2);">Loading…</div>
+      <div class="card-title">Best picks <span id="best-range" style="font-size:10px;color:var(--text3);font-weight:400;"></span></div>
+      <div id="best-picks" style="font-size:13px;color:var(--text2);">Loading…</div>
     </div>
     <div class="card">
       <div class="card-title">Active boat profile <span style="font-size:10px;color:var(--text3);font-weight:400;">(edit in ⚙️ Setup)</span></div>
@@ -187,20 +233,31 @@ select option{background:#1a2e45;}
   </div>
 </div>
 
-<!-- WEATHER -->
+<!-- ===== WEATHER ===== -->
 <div id="panel-weather" class="panel">
   <div class="card">
-    <div class="card-title"><span class="live"></span>Live marine forecast — Open-Meteo · GFS + ECMWF · 25.72°N 82.65°W (~50nm WSW Caxambas)</div>
-    <div id="weather-detail-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
-      <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text2);"><span class="loading-spinner"></span>Fetching forecast…</div>
+    <div class="card-title"><span class="live"></span>Live marine forecast — Open-Meteo · GFS + ECMWF/GraphCast · Fishing grounds avg 25.41°N 82.53°W</div>
+    <div id="weather-detail" style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+      <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text2);"><span class="spinner"></span>Fetching…</div>
     </div>
   </div>
   <div class="card">
-    <div class="card-title">Model sources</div>
+    <div class="card-title">Sea breeze climatology — SW Florida summer</div>
     <div style="font-size:13px;line-height:1.9;color:var(--text2);">
-      Open-Meteo aggregates multiple NWP models. The marine endpoint primarily uses <strong style="color:var(--text);">ERA5 + GFS wave model (WAVEWATCH III)</strong> for offshore wave height and period, and <strong style="color:var(--text);">GFS + ECMWF IFS</strong> for wind. Data is updated every 6 hours. Forecast confidence:
+      <div class="drow"><span class="dlabel">Typical onset</span><span class="dval">1:00–3:00pm EDT</span></div>
+      <div class="drow"><span class="dlabel">Wind direction shift</span><span class="dval">Backs to SW/W/NW onshore</span></div>
+      <div class="drow"><span class="dlabel">Speed increase</span><span class="dval">+5–15kt above ambient</span></div>
+      <div class="drow"><span class="dlabel">Sea state impact</span><span class="dval">+1–3ft on return run within 2hrs</span></div>
+      <div class="drow"><span class="dlabel">Hard return deadline</span><span class="dval" style="color:var(--gold);">4:00pm (your configured target)</span></div>
+    </div>
+    <div class="info-bar">The planner checks afternoon wind direction and speed in the return window (noon–4pm). A SW/W/NW wind increasing after noon is flagged as sea breeze risk regardless of morning conditions.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Model sources &amp; confidence</div>
+    <div style="font-size:13px;line-height:1.9;color:var(--text2);">
+      Open-Meteo marine endpoint uses <strong style="color:var(--text);">GFS wave model (WAVEWATCH III)</strong> + <strong style="color:var(--text);">ECMWF IFS</strong> (which now incorporates Google DeepMind GraphCast) for wave height, period and swell. Wind from GFS + ECMWF. Data refreshed every 6 hours.
       <div style="margin-top:8px;">
-        <div class="drow"><span class="dlabel">Hours 0–72</span><span class="dval g">High — use for go/no-go decisions</span></div>
+        <div class="drow"><span class="dlabel">Hours 0–72</span><span class="dval g">High confidence — use for go/no-go</span></div>
         <div class="drow"><span class="dlabel">Days 4–5</span><span class="dval o">Moderate — directional guidance</span></div>
         <div class="drow"><span class="dlabel">Days 6–7</span><span class="dval" style="color:var(--text3);">Low — planning only, re-verify</span></div>
       </div>
@@ -208,31 +265,36 @@ select option{background:#1a2e45;}
   </div>
 </div>
 
-<!-- SOLUNAR -->
+<!-- ===== SOLUNAR ===== -->
 <div id="panel-solunar" class="panel">
   <div class="card">
-    <div class="card-title">Solunar ratings &amp; sunrise/sunset — calculated live for your dates &amp; location</div>
+    <div class="card-title">Solunar, nautical dawn &amp; sun times — calculated live for today's date · 25.9°N 81.7°W</div>
     <div style="overflow-x:auto;">
       <table class="sol-table">
-        <thead><tr><th>Date</th><th>🌅 Sunrise</th><th>🌇 Sunset</th><th>Rating</th><th>Major periods</th><th>Minor periods</th><th>Moon phase</th><th>Rec. depart</th></tr></thead>
-        <tbody id="solunar-tbody"><tr><td colspan="8" style="padding:16px;color:var(--text2);">Loading…</td></tr></tbody>
+        <thead>
+          <tr>
+            <th>Date</th><th>🌄 Naut. dawn</th><th>🌅 Sunrise</th><th>🌇 Sunset</th>
+            <th>Rating</th><th>Major periods</th><th>Minor periods</th><th>Moon</th><th>Depart</th>
+          </tr>
+        </thead>
+        <tbody id="solunar-tbody"><tr><td colspan="9" style="padding:16px;color:var(--text2);">Loading…</td></tr></tbody>
       </table>
     </div>
-    <div class="info-bar">Major periods last ~2hrs, minor ~1hr. Best bite within 30 min of major onset. Solunar times calculated astronomically for 25.9°N 81.7°W (Caxambas area). All times EDT.</div>
+    <div class="info-bar">Nautical dawn = 35 min before sunrise at 25.9°N — safe running light conditions. Recommended departure = nautical dawn or nearest solunar major onset, whichever is earlier. Major periods last ~2hrs, minor ~1hr.</div>
   </div>
   <div class="card">
-    <div class="card-title">Tides — Naples/Marco Island (NOAA Station 8725110)</div>
+    <div class="card-title">Tides — Naples/Marco Island NOAA Station 8725110</div>
     <div style="overflow-x:auto;">
       <table class="sol-table">
-        <thead><tr><th>Date</th><th>Low tide</th><th>High tide</th><th>At first light</th><th>Bottom fishing</th></tr></thead>
+        <thead><tr><th>Date</th><th>Low tide</th><th>High tide</th><th>At nautical dawn</th><th>Bottom fishing</th></tr></thead>
         <tbody id="tide-tbody"><tr><td colspan="5" style="padding:16px;color:var(--text2);">Loading…</td></tr></tbody>
       </table>
     </div>
-    <div class="info-bar">Tide times approximate — calculated from Naples tidal patterns. Verify at tidesandcurrents.noaa.gov station 8725110 for exact times.</div>
+    <div class="info-bar">Tide times approximate — calculated from Naples tidal patterns. Verify at tidesandcurrents.noaa.gov station 8725110.</div>
   </div>
 </div>
 
-<!-- SPOTS -->
+<!-- ===== SPOTS ===== -->
 <div id="panel-spots" class="panel">
   <div class="spot-controls">
     <div style="display:flex;align-items:center;gap:7px;">
@@ -286,10 +348,10 @@ select option{background:#1a2e45;}
     <div class="card-title">Selected spot</div>
     <div id="spot-detail-content"></div>
   </div>
-  <div class="info-bar">All 133 Strikelines waypoints. 4 MHB spots (~107nm) flagged ⛔ beyond fuel range. Fuel and transit use your ⚙️ Boat Setup profile.</div>
+  <div class="info-bar">All 133 Strikelines waypoints. 4 MHB spots (~107nm) flagged ⛔. Fuel and transit use your ⚙️ Boat Setup profile.</div>
 </div>
 
-<!-- FUEL -->
+<!-- ===== FUEL ===== -->
 <div id="panel-fuel" class="panel">
   <div class="metric-grid" id="fuel-metrics"></div>
   <div class="two-col">
@@ -318,11 +380,11 @@ select option{background:#1a2e45;}
   </div>
 </div>
 
-<!-- SETUP -->
+<!-- ===== SETUP ===== -->
 <div id="panel-setup" class="panel">
   <div class="card">
     <div class="card-title">⚙️ Boat &amp; trip parameters</div>
-    <div class="info-bar" style="margin-top:0;margin-bottom:14px;">Edit to match your vessel. Hit Save and all fuel, range, transit and cost figures update across every tab instantly. Share this file with any crew member — they update this panel for their own boat.</div>
+    <div class="info-bar" style="margin-top:0;margin-bottom:14px;">Edit to match your vessel. Hit Save and all calculations update instantly. Share with any crew — they update this panel for their own boat.</div>
     <div class="setup-grid">
       <div class="setup-field"><label>Vessel name</label><input type="text" id="s-vessel" placeholder="e.g. Solace 28HCS"></div>
       <div class="setup-field"><label>Engines</label><input type="text" id="s-engines" placeholder="e.g. Twin Mercury 300hp"></div>
@@ -339,13 +401,21 @@ select option{background:#1a2e45;}
       <div class="setup-field"><label>Cruise speed (mph)</label><input type="number" id="s-speed" placeholder="35" min="10" max="80"></div>
       <div class="setup-field"><label>Fuel cost per gallon ($)</label><input type="number" id="s-costpg" placeholder="4.50" step="0.05" min="1" max="15"></div>
       <div class="setup-field"><label>Departure point</label><input type="text" id="s-depart" placeholder="e.g. Caxambas Pass"></div>
-      <div class="setup-field"><label>Offshore forecast lat (decimal N)</label><input type="number" id="s-fclat" placeholder="25.72" step="0.01"></div>
-      <div class="setup-field"><label>Offshore forecast lon (decimal W)</label><input type="number" id="s-fclon" placeholder="-82.65" step="0.01"></div>
-      <div class="setup-field"><label>Max sea state — NO-GO (ft)</label><input type="number" id="s-maxseas" placeholder="4" min="1" max="10" step="0.5"></div>
-      <div class="setup-field"><label>Max wind — NO-GO (kt)</label><input type="number" id="s-maxwind" placeholder="20" min="5" max="40"></div>
+      <div class="setup-field"><label>Forecast lat (decimal N)</label><input type="number" id="s-fclat" placeholder="25.41" step="0.01"></div>
+      <div class="setup-field"><label>Forecast lon (decimal W, negative)</label><input type="number" id="s-fclon" placeholder="-82.53" step="0.01"></div>
+      <div class="setup-field"><label>Target return time</label>
+        <select id="s-return">
+          <option value="16">4:00pm</option>
+          <option value="14">2:00pm</option>
+          <option value="15">3:00pm</option>
+          <option value="17">5:00pm</option>
+        </select>
+      </div>
+      <div class="setup-field"><label>Max sea state NO-GO (ft)</label><input type="number" id="s-maxseas" placeholder="4" min="1" max="10" step="0.5"></div>
+      <div class="setup-field"><label>Max wind NO-GO (kt)</label><input type="number" id="s-maxwind" placeholder="20" min="5" max="40"></div>
     </div>
     <button class="save-btn" onclick="saveSetup()">💾 Save and apply to all calculations</button>
-    <div id="setup-saved" style="display:none;margin-top:10px;font-size:13px;color:var(--green);">✓ Saved! Refreshing weather for new coordinates…</div>
+    <div id="setup-saved" style="display:none;margin-top:10px;font-size:13px;color:var(--green);">✓ Saved! Refreshing weather…</div>
   </div>
   <div class="card">
     <div class="card-title">Current active profile</div>
@@ -355,19 +425,18 @@ select option{background:#1a2e45;}
 
 <script>
 // ============================================================
-// CONFIGURATION & DEFAULTS
+// DEFAULTS & PROFILE
 // ============================================================
-var DEFAULT_PROFILE = {
+var DEFAULT = {
   vessel:"Solace 28HCS", engines:"Twin Mercury 300hp",
   tank:200, reservePct:25, mpg:1.6, speed:35, costpg:4.50,
   depart:"Caxambas Pass",
-  fcLat:25.72, fcLon:-82.65,
-  maxSeas:4, maxWind:20
+  fcLat:25.41, fcLon:-82.53,
+  returnHr:16, maxSeas:4, maxWind:20
 };
-
 function loadProfile() {
-  try { var s = localStorage.getItem("boatProfile"); return s ? JSON.parse(s) : DEFAULT_PROFILE; }
-  catch(e) { return DEFAULT_PROFILE; }
+  try { var s=localStorage.getItem("boatProfile"); return s?JSON.parse(s):DEFAULT; }
+  catch(e) { return DEFAULT; }
 }
 function getP() { return loadProfile(); }
 
@@ -375,416 +444,572 @@ function getP() { return loadProfile(); }
 // TAB SWITCHING
 // ============================================================
 function showPanel(name, btn) {
-  var panels = document.querySelectorAll(".panel");
-  for (var i=0; i<panels.length; i++) { panels[i].classList.remove("active"); }
-  var buttons = document.querySelectorAll(".tabbar button");
-  for (var i=0; i<buttons.length; i++) { buttons[i].classList.remove("active"); }
+  var panels=document.querySelectorAll(".panel");
+  for (var i=0;i<panels.length;i++) { panels[i].classList.remove("active"); }
+  var buttons=document.querySelectorAll(".tabbar button");
+  for (var i=0;i<buttons.length;i++) { buttons[i].classList.remove("active"); }
   document.getElementById("panel-"+name).classList.add("active");
   if (btn) { btn.classList.add("active"); }
 }
 
 // ============================================================
-// ASTRONOMY — SOLUNAR & SUNRISE/SUNSET (no API needed)
+// ASTRONOMY
 // ============================================================
 function julianDay(date) {
-  var a = Math.floor((14 - (date.getMonth()+1)) / 12);
-  var y = date.getFullYear() + 4800 - a;
-  var m = (date.getMonth()+1) + 12*a - 3;
-  return date.getDate() + Math.floor((153*m+2)/5) + 365*y + Math.floor(y/4) - Math.floor(y/100) + Math.floor(y/400) - 32045;
+  var a=Math.floor((14-(date.getMonth()+1))/12);
+  var y=date.getFullYear()+4800-a;
+  var m=(date.getMonth()+1)+12*a-3;
+  return date.getDate()+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-Math.floor(y/100)+Math.floor(y/400)-32045;
 }
-
 function sunTimes(date, lat, lon) {
-  var JD = julianDay(date);
-  var n = JD - 2451545.0 + 0.5;
-  var L = (280.46 + 0.9856474 * n) % 360;
-  var g = (357.528 + 0.9856003 * n) % 360;
-  var gR = g * Math.PI / 180;
-  var lam = L + 1.915 * Math.sin(gR) + 0.020 * Math.sin(2*gR);
-  var lamR = lam * Math.PI / 180;
-  var sinDec = Math.sin(23.439 * Math.PI/180) * Math.sin(lamR);
-  var dec = Math.asin(sinDec);
-  var RA = Math.atan2(Math.cos(dec)*Math.sin(lamR), Math.cos(lamR)) * 180/Math.PI;
-  var EqT = L - 0.0057183 - RA + 1.915*Math.sin(gR) + 0.020*Math.sin(2*gR);
-  var noon = 12 - lon/15 - EqT/60;
-  var cosH = (Math.sin(-0.0145) - Math.sin(lat*Math.PI/180)*Math.sin(dec)) /
-             (Math.cos(lat*Math.PI/180)*Math.cos(dec));
-  if (cosH < -1) { return {rise:0, set:24, noon:noon}; }
-  if (cosH > 1)  { return {rise:12, set:12, noon:noon}; }
-  var H = Math.acos(cosH) * 180/Math.PI / 15;
-  return { rise: noon - H, set: noon + H, noon: noon };
+  var JD=julianDay(date);
+  var n=JD-2451545.0+0.5;
+  var L=(280.46+0.9856474*n)%360;
+  var g=(357.528+0.9856003*n)%360;
+  var gR=g*Math.PI/180;
+  var lam=L+1.915*Math.sin(gR)+0.020*Math.sin(2*gR);
+  var lamR=lam*Math.PI/180;
+  var sinDec=Math.sin(23.439*Math.PI/180)*Math.sin(lamR);
+  var dec=Math.asin(sinDec);
+  var RA=Math.atan2(Math.cos(dec)*Math.sin(lamR),Math.cos(lamR))*180/Math.PI;
+  var EqT=L-0.0057183-RA+1.915*Math.sin(gR)+0.020*Math.sin(2*gR);
+  var noon=12-lon/15-EqT/60;
+  var cosH=(Math.sin(-0.0145)-Math.sin(lat*Math.PI/180)*Math.sin(dec))/(Math.cos(lat*Math.PI/180)*Math.cos(dec));
+  if (cosH<-1) { return {rise:6,set:20,noon:noon}; }
+  if (cosH>1)  { return {rise:6,set:20,noon:noon}; }
+  var H=Math.acos(cosH)*180/Math.PI/15;
+  return {rise:noon-H, set:noon+H, noon:noon};
 }
-
+function nauticalDawn(sunriseUTC) { return sunriseUTC-0.583; } // 35 min before sunrise
 function moonPhase(date) {
-  var JD = julianDay(date);
-  var cycle = (JD - 2451550.1) / 29.530588853;
-  var phase = cycle - Math.floor(cycle);
-  return phase;
+  var JD=julianDay(date);
+  var cycle=(JD-2451550.1)/29.530588853;
+  return cycle-Math.floor(cycle);
 }
-
 function moonTimes(date, lat, lon) {
-  var phase = moonPhase(date);
-  var lunarDay = phase * 24;
-  var major1 = (lunarDay % 24 + 24) % 24;
-  var major2 = (major1 + 12) % 24;
-  var minor1 = (major1 + 6) % 24;
-  var minor2 = (major1 + 18) % 24;
-  var lonOff = lon / 15;
-  function adj(h) {
-    var a = ((h - lonOff) % 24 + 24) % 24;
-    if (a > 20) { a -= 24; }
-    return a;
-  }
-  return {
-    major1: adj(major1), major2: adj(major2),
-    minor1: adj(minor1), minor2: adj(minor2)
-  };
+  var phase=moonPhase(date);
+  var lunarDay=phase*24;
+  var major1=(lunarDay%24+24)%24;
+  var major2=(major1+12)%24;
+  var minor1=(major1+6)%24;
+  var minor2=(major1+18)%24;
+  var lonOff=lon/15;
+  function adj(h) { var a=((h-lonOff)%24+24)%24; if(a>20){a-=24;} return a; }
+  return {major1:adj(major1),major2:adj(major2),minor1:adj(minor1),minor2:adj(minor2)};
 }
-
 function solunarRating(date, lat, lon) {
-  var sun = sunTimes(date, lat, lon);
-  var moon = moonTimes(date, lat, lon);
-  var phase = moonPhase(date);
-  var score = 3;
-  var newMoonBonus = (phase < 0.08 || phase > 0.92) ? 2 : 0;
-  var fullMoonBonus = (phase > 0.45 && phase < 0.55) ? 1 : 0;
-  var majorNearSunrise = Math.abs(moon.major1 - sun.rise) < 1.5 || Math.abs(moon.major2 - sun.rise) < 1.5;
-  var majorNearSunset  = Math.abs(moon.major1 - sun.set)  < 1.5 || Math.abs(moon.major2 - sun.set)  < 1.5;
-  if (majorNearSunrise || majorNearSunset) { score += 2; }
-  score += newMoonBonus + fullMoonBonus;
-  score = Math.max(1, Math.min(5, Math.round(score)));
-  return { score:score, major1:moon.major1, major2:moon.major2, minor1:moon.minor1, minor2:moon.minor2 };
+  var sun=sunTimes(date,lat,lon);
+  var moon=moonTimes(date,lat,lon);
+  var phase=moonPhase(date);
+  var score=3;
+  var newMoon=(phase<0.08||phase>0.92)?2:0;
+  var fullMoon=(phase>0.45&&phase<0.55)?1:0;
+  var riseAdj=sun.rise-5;
+  var majorNearSun=Math.abs(moon.major1-riseAdj)<1.5||Math.abs(moon.major2-riseAdj)<1.5;
+  if (majorNearSun) { score+=2; }
+  score+=newMoon+fullMoon;
+  return {score:Math.max(1,Math.min(5,Math.round(score))),major1:moon.major1,major2:moon.major2,minor1:moon.minor1,minor2:moon.minor2};
 }
-
-function fmtHr(h) {
-  if (h === null || isNaN(h)) { return "—"; }
-  var hh = ((h % 24) + 24) % 24;
-  var hr = Math.floor(hh);
-  var mn = Math.round((hh - hr) * 60);
-  if (mn === 60) { hr++; mn = 0; }
-  var ampm = hr >= 12 ? "pm" : "am";
-  var displayHr = hr % 12; if (displayHr === 0) { displayHr = 12; }
-  return displayHr + ":" + (mn < 10 ? "0"+mn : mn) + ampm;
-}
-
-function moonPhaseName(phase) {
-  if (phase < 0.03 || phase > 0.97) { return "New moon 🌑"; }
-  if (phase < 0.22) { return "Waxing crescent"; }
-  if (phase < 0.28) { return "First quarter 🌓"; }
-  if (phase < 0.47) { return "Waxing gibbous"; }
-  if (phase < 0.53) { return "Full moon 🌕"; }
-  if (phase < 0.72) { return "Waning gibbous"; }
-  if (phase < 0.78) { return "Last quarter 🌗"; }
+function moonPhaseName(p) {
+  if (p<0.03||p>0.97) { return "New moon 🌑"; }
+  if (p<0.22) { return "Waxing crescent"; }
+  if (p<0.28) { return "First quarter 🌓"; }
+  if (p<0.47) { return "Waxing gibbous"; }
+  if (p<0.53) { return "Full moon 🌕"; }
+  if (p<0.72) { return "Waning gibbous"; }
+  if (p<0.78) { return "Last quarter 🌗"; }
   return "Waning crescent";
 }
-
+function fmtHr(h) {
+  if (h===null||isNaN(h)) { return "—"; }
+  var hh=((h%24)+24)%24;
+  var hr=Math.floor(hh);
+  var mn=Math.round((hh-hr)*60);
+  if (mn===60) { hr++; mn=0; }
+  var ampm=hr>=12?"pm":"am";
+  var dh=hr%12; if(dh===0){dh=12;}
+  return dh+":"+(mn<10?"0"+mn:mn)+ampm;
+}
 function starsHtml(n) {
-  var s = "";
-  for (var i=1; i<=5; i++) {
-    s += '<span class="'+(i<=n?"stars":"stars-off")+'">★</span>';
-  }
+  var s="";
+  for (var i=1;i<=5;i++) { s+='<span class="'+(i<=n?"stars":"stars-off")+'">★</span>'; }
   return s;
 }
 
+// ============================================================
+// SOLUNAR & TIDE TABLE
+// ============================================================
 function buildSolunarTable() {
-  var p = getP();
-  var lat = 25.9, lon = -81.73;
-  var rows = "";
-  var today = new Date();
-  today.setHours(0,0,0,0);
-  for (var d=0; d<7; d++) {
-    var date = new Date(today.getTime() + d*86400000);
-    var sun = sunTimes(date, lat, lon);
-    var sol = solunarRating(date, lat, lon);
-    var phase = moonPhase(date);
-    var riseAdj = sun.rise - 5; // EDT offset approx
-    var setAdj  = sun.set  - 5;
-    var depart = fmtHr(sol.major1 - 0.33);
-    var dayName = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date.getDay()];
-    var monthName = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date.getMonth()];
-    var dateStr = dayName + " " + monthName + " " + date.getDate();
-    var isBest = sol.score >= 5;
-    rows += '<tr' + (isBest ? ' style="background:rgba(245,166,35,0.04);"' : '') + '>' +
-      '<td style="' + (isBest ? "color:var(--gold);font-weight:700;" : "") + '">' + dateStr + '</td>' +
-      '<td style="color:var(--gold);">' + fmtHr(riseAdj) + '</td>' +
-      '<td style="color:var(--text2);">' + fmtHr(setAdj) + '</td>' +
-      '<td>' + starsHtml(sol.score) + '</td>' +
-      '<td style="color:var(--gold);">' + fmtHr(sol.major1) + ' · ' + fmtHr(sol.major2) + '</td>' +
-      '<td style="color:var(--text2);">' + fmtHr(sol.minor1) + ' · ' + fmtHr(sol.minor2) + '</td>' +
-      '<td style="color:var(--text2);">' + moonPhaseName(phase) + '</td>' +
-      '<td style="color:' + (isBest ? "var(--gold)" : "var(--accent)") + ';font-weight:700;">' + depart + (isBest ? " ⭐" : "") + '</td>' +
+  var lat=25.9; var lon=-81.73;
+  var today=new Date(); today.setHours(0,0,0,0);
+  var rows="";
+  for (var d=0;d<7;d++) {
+    var date=new Date(today.getTime()+d*86400000);
+    var sun=sunTimes(date,lat,lon);
+    var sol=solunarRating(date,lat,lon);
+    var phase=moonPhase(date);
+    var riseEDT=sun.rise-5;
+    var setEDT=sun.set-5;
+    var dawnEDT=nauticalDawn(riseEDT);
+    var dayName=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date.getDay()];
+    var monthName=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date.getMonth()];
+    var dateStr=dayName+" "+monthName+" "+date.getDate();
+    var isBest=sol.score>=5;
+    var departTime=Math.min(dawnEDT,sol.major1<8?sol.major1:dawnEDT);
+    rows+='<tr'+(isBest?' style="background:rgba(245,166,35,0.04);"':'')+'>'+
+      '<td style="'+(isBest?"color:var(--gold);font-weight:700;":"")+'">' +dateStr+'</td>'+
+      '<td style="color:var(--gold);">'+fmtHr(dawnEDT)+'</td>'+
+      '<td style="color:var(--text2);">'+fmtHr(riseEDT)+'</td>'+
+      '<td style="color:var(--text2);">'+fmtHr(setEDT)+'</td>'+
+      '<td>'+starsHtml(sol.score)+'</td>'+
+      '<td style="color:var(--gold);">'+fmtHr(sol.major1)+' · '+fmtHr(sol.major2)+'</td>'+
+      '<td style="color:var(--text2);">'+fmtHr(sol.minor1)+' · '+fmtHr(sol.minor2)+'</td>'+
+      '<td style="color:var(--text2);">'+moonPhaseName(phase)+'</td>'+
+      '<td style="color:'+(isBest?"var(--gold)":"var(--accent)")+';font-weight:700;">'+fmtHr(departTime)+(isBest?" ⭐":"")+'</td>'+
       '</tr>';
   }
-  document.getElementById("solunar-tbody").innerHTML = rows;
+  document.getElementById("solunar-tbody").innerHTML=rows;
   buildTideTable();
 }
-
-// Approximate tide pattern for Naples (semi-diurnal, ~12.4hr cycle)
 function buildTideTable() {
-  var rows = "";
-  var today = new Date(); today.setHours(0,0,0,0);
-  // Base low tide reference for Naples area (approximate)
-  var baseLow = 3.2; // hours past midnight for first low
-  for (var d=0; d<7; d++) {
-    var date = new Date(today.getTime() + d*86400000);
-    var dayName = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date.getDay()];
-    var monthName = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date.getMonth()];
-    var dateStr = dayName + " " + monthName + " " + date.getDate();
-    // Each day shifts ~50 min later (lunar day = 24h 50m)
-    var shift = d * (50/60);
-    var low1  = ((baseLow + shift) % 24 + 24) % 24;
-    var high1 = (low1 + 6.2) % 24;
-    var low2  = (low1 + 12.4) % 24;
-    var high2 = (low1 + 18.6) % 24;
-    var sun = sunTimes(date, 25.9, -81.73);
-    var sunriseEDT = sun.rise - 5;
-    var isOutgoing = (sunriseEDT > low1 && sunriseEDT < high1) || (sunriseEDT > low2);
-    var tideAtLight = isOutgoing ? "Outgoing ↓" : "Incoming ↑";
-    var tideColor  = isOutgoing ? "var(--accent)" : "var(--text2)";
-    var fishQuality = isOutgoing ? "Good ✓" : "Moderate";
-    var fishColor  = isOutgoing ? "var(--green)" : "var(--orange)";
-    var isBest = d === 5; // placeholder — overridden by weather score
-    rows += '<tr' + (isBest ? ' style="background:rgba(0,191,255,0.03);"' : '') + '>' +
-      '<td>' + dateStr + '</td>' +
-      '<td style="color:var(--text2);">' + fmtHr(low1) + ' / ' + fmtHr(low2) + '</td>' +
-      '<td style="color:var(--text2);">' + fmtHr(high1) + ' / ' + fmtHr(high2) + '</td>' +
-      '<td style="color:' + tideColor + ';">' + tideAtLight + '</td>' +
-      '<td style="color:' + fishColor + ';">' + fishQuality + '</td>' +
+  var today=new Date(); today.setHours(0,0,0,0);
+  var baseLow=3.2;
+  var rows="";
+  for (var d=0;d<7;d++) {
+    var date=new Date(today.getTime()+d*86400000);
+    var dayName=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date.getDay()];
+    var monthName=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date.getMonth()];
+    var dateStr=dayName+" "+monthName+" "+date.getDate();
+    var shift=d*(50/60);
+    var low1=((baseLow+shift)%24+24)%24;
+    var high1=(low1+6.2)%24;
+    var low2=(low1+12.4)%24;
+    var sun=sunTimes(date,25.9,-81.73);
+    var dawnEDT=nauticalDawn(sun.rise-5);
+    var isOutgoing=(dawnEDT>low1&&dawnEDT<high1)||(dawnEDT>low2&&dawnEDT<(low2+6.2));
+    var tideStr=isOutgoing?"Outgoing ↓":"Incoming ↑";
+    var tideCol=isOutgoing?"var(--accent)":"var(--text2)";
+    var fishQ=isOutgoing?"Good ✓":"Moderate";
+    var fishCol=isOutgoing?"var(--green)":"var(--orange)";
+    rows+='<tr>'+
+      '<td>'+dateStr+'</td>'+
+      '<td style="color:var(--text2);">'+fmtHr(low1)+' / '+fmtHr(low2)+'</td>'+
+      '<td style="color:var(--text2);">'+fmtHr(high1)+' / '+fmtHr((low1+18.6)%24)+'</td>'+
+      '<td style="color:'+tideCol+';">'+tideStr+'</td>'+
+      '<td style="color:'+fishCol+';">'+fishQ+'</td>'+
       '</tr>';
   }
-  document.getElementById("tide-tbody").innerHTML = rows;
+  document.getElementById("tide-tbody").innerHTML=rows;
 }
 
 // ============================================================
-// WEATHER — OPEN-METEO MARINE API (live fetch)
+// SCORING — updated weights
 // ============================================================
-function fetchWeatherAndRender() {
-  var p = getP();
-  var lat = p.fcLat || 25.72;
-  var lon = p.fcLon || -82.65;
+function scoreDay(waveM, windKt, precipPct, weatherCode, solScore, isOutgoing, dayIndex) {
+  var p=getP();
+  var waveFt=waveM*3.281;
+  var isSevere=weatherCode>=99;
+  // Hard NO-GO
+  if (waveFt>p.maxSeas||windKt>p.maxWind||isSevere) {
+    return {score:0,nogo:true,nogoReason:isSevere?"Severe thunderstorm":(waveFt>p.maxSeas?"Seas "+waveFt.toFixed(1)+"ft > "+p.maxSeas+"ft limit":"Wind "+Math.round(windKt)+"kt > "+p.maxWind+"kt limit")};
+  }
+  // Seas 35%
+  var seasScore=Math.max(0,100-(waveFt/p.maxSeas)*100)*0.35;
+  // Wind 35%
+  var windScore=Math.max(0,100-(windKt/p.maxWind)*100)*0.35;
+  // Storm 15% — code 95-98 = moderate penalty
+  var tstmPenalty=(weatherCode>=95&&weatherCode<99)?35:0;
+  var stormScore=Math.max(0,(1-precipPct/100)*100-tstmPenalty)*0.15;
+  // Solunar 10%
+  var solScore10=(solScore/5)*100*0.10;
+  // Tide 5%
+  var tideScore=(isOutgoing?100:55)*0.05;
+  // Confidence reduction days 4-7
+  var conf=dayIndex<3?1.0:dayIndex<5?0.9:0.8;
+  var total=Math.round((seasScore+windScore+stormScore+solScore10+tideScore)*conf);
+  return {score:Math.min(99,Math.max(1,total)),nogo:false};
+}
 
-  document.getElementById("weather-source-note").innerHTML =
-    '<span class="loading-spinner"></span>Fetching live data from Open-Meteo for ' + lat + '°N, ' + Math.abs(lon) + '°W…';
-  document.getElementById("forecast-tbody").innerHTML =
-    '<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--text2);"><span class="loading-spinner"></span>Loading…</td></tr>';
-  document.getElementById("weather-badge").innerHTML =
-    '<span class="loading-spinner"></span>Fetching live weather…';
-
-  // Open-Meteo Marine + Forecast combined
-  var marineUrl = "https://marine-api.open-meteo.com/v1/marine?" +
-    "latitude=" + lat + "&longitude=" + lon +
-    "&daily=wave_height_max,wave_period_max,wave_direction_dominant,swell_wave_height_max" +
-    "&timezone=America%2FNew_York&forecast_days=7";
-
-  var forecastUrl = "https://api.open-meteo.com/v1/forecast?" +
-    "latitude=" + lat + "&longitude=" + lon +
-    "&daily=wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant," +
-    "precipitation_probability_max,weather_code" +
-    "&wind_speed_unit=kn&timezone=America%2FNew_York&forecast_days=7";
-
-  var marineData = null;
-  var forecastData = null;
-
-  function tryRender() {
-    if (marineData && forecastData) {
-      renderForecast(marineData, forecastData);
+// Sea breeze detection from hourly afternoon data
+function detectSeaBreeze(hourlyTimes, hourlyWindSpeed, hourlyWindDir) {
+  if (!hourlyTimes||!hourlyWindSpeed||!hourlyWindDir) { return {risk:false,detail:"No hourly data"}; }
+  var afternoonSpeeds=[];
+  var afternoonDirs=[];
+  for (var i=0;i<hourlyTimes.length;i++) {
+    var hr=new Date(hourlyTimes[i]).getHours();
+    if (hr>=12&&hr<=16) {
+      afternoonSpeeds.push(hourlyWindSpeed[i]||0);
+      afternoonDirs.push(hourlyWindDir[i]||0);
     }
   }
-
-  fetch(marineUrl)
-    .then(function(r) { return r.json(); })
-    .then(function(d) { marineData = d; tryRender(); })
-    .catch(function(e) {
-      console.error("Marine API error:", e);
-      document.getElementById("forecast-tbody").innerHTML =
-        '<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--orange);">⚠ Could not fetch marine data. Check your internet connection or try refreshing. Error: ' + e.message + '</td></tr>';
-      document.getElementById("weather-badge").innerHTML =
-        '⚠ Weather fetch failed — check connection';
-    });
-
-  fetch(forecastUrl)
-    .then(function(r) { return r.json(); })
-    .then(function(d) { forecastData = d; tryRender(); })
-    .catch(function(e) {
-      console.error("Forecast API error:", e);
-    });
+  if (!afternoonSpeeds.length) { return {risk:false,detail:"No afternoon data"}; }
+  var maxAftWind=Math.max.apply(null,afternoonSpeeds);
+  // Sea breeze signature: wind direction backing to SW/W/NW (200-330 deg) and speed increasing
+  var sbDirs=afternoonDirs.filter(function(d){ return d>=200&&d<=330; });
+  var sbSignature=sbDirs.length>=2;
+  var risk=sbSignature&&maxAftWind>8;
+  var detail=risk?
+    "Sea breeze likely — afternoon SW/W winds "+Math.round(maxAftWind)+"kt. Be back by 2pm or conditions may deteriorate on return." :
+    "Sea breeze risk low — afternoon winds "+Math.round(maxAftWind)+"kt, direction "+windDirName(afternoonDirs[0]||180)+".";
+  return {risk:risk, maxWind:Math.round(maxAftWind), detail:detail};
 }
 
-function waveHeightFt(m) {
-  return Math.round(m * 3.281 * 10) / 10;
+function windDirName(deg) {
+  var dirs=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+  return dirs[Math.round(deg/22.5)%16];
 }
-
-function windDir(deg) {
-  var dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
-  return dirs[Math.round(deg/22.5) % 16];
-}
-
+function waveHeightFt(m) { return Math.round(m*3.281*10)/10; }
 function weatherCodeDesc(code) {
-  if (code === 0) { return "Clear"; }
-  if (code <= 3)  { return "Partly cloudy"; }
-  if (code <= 48) { return "Foggy/overcast"; }
-  if (code <= 67) { return "Rain"; }
-  if (code <= 77) { return "Snow/sleet"; }
-  if (code <= 82) { return "Showers"; }
-  if (code <= 99) { return "Thunderstorms ⚡"; }
+  if (code===0) { return "Clear"; }
+  if (code<=3)  { return "Partly cloudy"; }
+  if (code<=48) { return "Foggy/overcast"; }
+  if (code<=67) { return "Rain"; }
+  if (code<=77) { return "Snow/sleet"; }
+  if (code<=82) { return "Showers"; }
+  if (code<=99) { return "Thunderstorms ⚡"; }
   return "Unknown";
 }
 
-function scoreDay(waveM, windKt, precipPct, weatherCode, solScore, isOutgoing, dayIndex) {
-  var p = getP();
-  var waveFt = waveHeightFt(waveM);
-  var isThunder = weatherCode >= 99;
-  // Hard NO-GO
-  if (waveFt > p.maxSeas || windKt > p.maxWind || isThunder) {
-    return { score: 0, nogo: true, nogoReason: isThunder ? "Thunderstorm risk" : (waveFt > p.maxSeas ? "Seas " + waveFt + "ft exceed limit" : "Wind " + Math.round(windKt) + "kt exceeds limit") };
+// ============================================================
+// WEATHER FETCH — hourly + daily
+// ============================================================
+var cachedHourlyData = null;
+
+function fetchWeatherAndRender() {
+  document.getElementById("weather-source-note").innerHTML='<span class="spinner"></span>Loading weather data…';
+  document.getElementById("forecast-tbody").innerHTML='<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--text2);"><span class="spinner"></span>Loading live weather…</td></tr>';
+  document.getElementById("weather-badge").innerHTML='<span class="spinner"></span>Loading…';
+
+  // Load from same-origin weather.json (updated every 6hrs by GitHub Actions)
+  // Same-origin requests cannot be blocked by Safari privacy settings
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "./weather.json?t=" + Date.now(), true);
+  xhr.timeout = 10000;
+  xhr.onload = function() {
+    if (xhr.status >= 200 && xhr.status < 300) {
+      try {
+        var data = JSON.parse(xhr.responseText);
+        if (data.forecast && data.marine) {
+          cachedHourlyData = data.forecast;
+          renderForecast(data.marine, data.forecast);
+          var updated = data.updated ? new Date(data.updated) : new Date();
+          var age = Math.round((Date.now() - updated.getTime()) / 60000);
+          document.getElementById("weather-badge").innerHTML =
+            '<span class="live"></span>Live · ' + age + 'min ago';
+          var p2 = getP();
+          document.getElementById("weather-source-note").innerHTML =
+            '<span class="live"></span><strong>Open-Meteo Marine API</strong> · GFS + ECMWF · ' +
+            (p2.fcLat||25.41) + '°N, ' + Math.abs(p2.fcLon||-82.53) + '°W · ' +
+            'Updated ' + updated.toLocaleTimeString() + ' (auto-refreshes every 6hrs) · ' +
+            '<span class="conf-high">● 0–72h high</span> &nbsp;' +
+            '<span class="conf-med">● Days 4–5 moderate</span> &nbsp;' +
+            '<span class="conf-low">● Days 6–7 directional</span>';
+        } else {
+          // weather.json exists but Action hasn't run yet
+          showWeatherError("Weather data not yet available. Go to your GitHub repo → Actions tab → select 'Fetch Weather Data' → click 'Run workflow' to populate it now.");
+        }
+      } catch(e) {
+        showWeatherError("Could not parse weather data: " + e.message);
+      }
+    } else {
+      showWeatherError("weather.json not found (HTTP " + xhr.status + "). Make sure weather.json is uploaded to your GitHub repo.");
+    }
+  };
+  xhr.onerror = function() {
+    showWeatherError("Could not load weather.json. Make sure you are viewing this page from gvlasuk.github.io and not a local file.");
+  };
+  xhr.ontimeout = function() {
+    showWeatherError("Request timed out loading weather.json.");
+  };
+  xhr.send();
+}
+
+function showWeatherError(msg) {
+  document.getElementById("forecast-tbody").innerHTML =
+    '<tr><td colspan="7" style="padding:16px;">' +
+    '<div style="color:var(--orange);margin-bottom:12px;font-size:13px;">⚠ ' + msg + '</div>' +
+    '<button onclick="fetchWeatherAndRender()" style="background:rgba(0,191,255,0.15);border:1px solid rgba(0,191,255,0.3);color:#00bfff;padding:7px 16px;border-radius:6px;cursor:pointer;font-size:13px;margin-right:8px;">↻ Try again</button>' +
+    '<button onclick="useManualWeather()" style="background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:var(--gold);padding:7px 16px;border-radius:6px;cursor:pointer;font-size:13px;">✏ Enter conditions manually</button>' +
+    '</td></tr>';
+  document.getElementById("weather-badge").innerHTML = '⚠ No weather data';
+  document.getElementById("weather-source-note").innerHTML =
+    '⚠ ' + msg;
+}
+
+function useManualWeather() {
+  // Fallback: let user enter today's conditions manually
+  document.getElementById("forecast-tbody").innerHTML=
+    '<tr><td colspan="7" style="padding:16px;">'+
+    '<div style="font-size:12px;color:var(--text2);margin-bottom:10px;">Enter current offshore conditions manually (from Windy, NOAA, or Boat-N-Go):</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px;">'+
+    '<div><label style="font-size:10px;color:var(--text3);display:block;margin-bottom:3px;">SEAS (ft)</label>'+
+    '<input id="m-seas" type="number" value="2" step="0.5" min="0" max="20" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:6px;font-size:14px;"></div>'+
+    '<div><label style="font-size:10px;color:var(--text3);display:block;margin-bottom:3px;">WIND (kt)</label>'+
+    '<input id="m-wind" type="number" value="10" step="1" min="0" max="60" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:6px;font-size:14px;"></div>'+
+    '<div><label style="font-size:10px;color:var(--text3);display:block;margin-bottom:3px;">RAIN PROB (%)</label>'+
+    '<input id="m-rain" type="number" value="20" step="5" min="0" max="100" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:6px;font-size:14px;"></div>'+
+    '<div><label style="font-size:10px;color:var(--text3);display:block;margin-bottom:3px;">TSTM RISK</label>'+
+    '<select id="m-tstm" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:6px;font-size:13px;"><option value="0">None</option><option value="1">Low</option><option value="2">Moderate</option><option value="3">High</option></select></div>'+
+    '</div>'+
+    '<button onclick="applyManualWeather()" style="background:rgba(0,191,255,0.15);border:1px solid rgba(0,191,255,0.3);color:#00bfff;padding:7px 18px;border-radius:6px;cursor:pointer;font-size:13px;margin-right:8px;">Apply for all 7 days</button>'+
+    '<button onclick="fetchWeatherAndRender()" style="background:transparent;border:1px solid var(--border);color:var(--text2);padding:7px 18px;border-radius:6px;cursor:pointer;font-size:13px;">↻ Try fetching again</button>'+
+    '</td></tr>';
+}
+
+function applyManualWeather() {
+  var seas=parseFloat(document.getElementById("m-seas").value)||2;
+  var wind=parseFloat(document.getElementById("m-wind").value)||10;
+  var rain=parseFloat(document.getElementById("m-rain").value)||20;
+  var tstm=parseInt(document.getElementById("m-tstm").value)||0;
+  var waveM=seas/3.281;
+  var wCode=tstm>=3?99:tstm>=2?95:tstm>=1?80:1;
+
+  // Build synthetic data for 7 days using manual values
+  var syntheticMarine={daily:{wave_height_max:[],wave_period_max:[]}};
+  var syntheticForecast={daily:{wind_speed_10m_max:[],wind_gusts_10m_max:[],
+    wind_direction_10m_dominant:[],precipitation_probability_max:[],weather_code:[]},
+    hourly:{time:[],wind_speed_10m:[],wind_direction_10m:[]}};
+
+  for (var d=0;d<7;d++) {
+    syntheticMarine.daily.wave_height_max.push(waveM);
+    syntheticMarine.daily.wave_period_max.push(6);
+    syntheticForecast.daily.wind_speed_10m_max.push(wind);
+    syntheticForecast.daily.wind_gusts_10m_max.push(wind*1.3);
+    syntheticForecast.daily.wind_direction_10m_dominant.push(180);
+    syntheticForecast.daily.precipitation_probability_max.push(rain);
+    syntheticForecast.daily.weather_code.push(wCode);
   }
-  // Seas score (35%) — scale: 0ft=100, maxSeas=0
-  var seasScore = Math.max(0, 100 - (waveFt / p.maxSeas) * 100) * 0.35;
-  // Wind score (15%)
-  var windScore = Math.max(0, 100 - (windKt / p.maxWind) * 100) * 0.15;
-  // Storm risk (10%)
-  var tstmPenalty = (weatherCode >= 95 && weatherCode < 99) ? 30 : 0; var stormScore = Math.max(0, (1 - precipPct/100) * 100 - tstmPenalty) * 0.10;
-  // Solunar (25%)
-  var solScore25 = (solScore / 5) * 100 * 0.25;
-  // Tide (15%)
-  var tideScore = (isOutgoing ? 100 : 55) * 0.15;
-  // Confidence reduction for days 4-7
-  var confidence = dayIndex < 3 ? 1.0 : dayIndex < 5 ? 0.9 : 0.8;
-  var total = Math.round((seasScore + windScore + stormScore + solScore25 + tideScore) * confidence);
-  return { score: Math.min(99, Math.max(1, total)), nogo: false };
+
+  document.getElementById("weather-badge").innerHTML='<span style="color:var(--orange);">✏ Manual data</span>';
+  document.getElementById("weather-source-note").innerHTML='<span style="color:var(--orange);">✏ Manual entry mode</span> — conditions entered by user. Tap ↻ Refresh to try live data again.';
+  renderForecast(syntheticMarine, syntheticForecast);
 }
 
 function renderForecast(marine, forecast) {
-  var today = new Date(); today.setHours(0,0,0,0);
-  var lat = 25.9; var lon = -81.73;
-  var rows = "";
-  var nogoDays = [];
-  var scoredDays = [];
+  var today=new Date(); today.setHours(0,0,0,0);
+  var lat=25.9; var lon=-81.73;
+  var rows=""; var nogoDays=[]; var scoredDays=[];
 
-  for (var d=0; d<7; d++) {
-    var date = new Date(today.getTime() + d*86400000);
-    var dayName = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date.getDay()];
-    var monthName = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date.getMonth()];
-    var dateStr = dayName + " " + monthName + " " + date.getDate();
+  for (var d=0;d<7;d++) {
+    var date=new Date(today.getTime()+d*86400000);
+    var dayName=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date.getDay()];
+    var monthName=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date.getMonth()];
 
-    var waveM    = (marine.daily && marine.daily.wave_height_max) ? (marine.daily.wave_height_max[d] || 0.5) : 0.5;
-    var windKt   = (forecast.daily && forecast.daily.wind_speed_10m_max) ? (forecast.daily.wind_speed_10m_max[d] || 10) : 10;
-    var gustKt   = (forecast.daily && forecast.daily.wind_gusts_10m_max) ? (forecast.daily.wind_gusts_10m_max[d] || 12) : 12;
-    var windDeg  = (forecast.daily && forecast.daily.wind_direction_10m_dominant) ? (forecast.daily.wind_direction_10m_dominant[d] || 180) : 180;
-    var precipPct = (forecast.daily && forecast.daily.precipitation_probability_max) ? (forecast.daily.precipitation_probability_max[d] || 0) : 0;
-    var wCode    = (forecast.daily && forecast.daily.weather_code) ? (forecast.daily.weather_code[d] || 0) : 0;
-    var wavePeriod = (marine.daily && marine.daily.wave_period_max) ? (marine.daily.wave_period_max[d] || 6) : 6;
+    // Daily values
+    var waveM=(marine.daily&&marine.daily.wave_height_max)?(marine.daily.wave_height_max[d]||0.5):0.5;
+    var windKt=(forecast.daily&&forecast.daily.wind_speed_10m_max)?(forecast.daily.wind_speed_10m_max[d]||10):10;
+    var gustKt=(forecast.daily&&forecast.daily.wind_gusts_10m_max)?(forecast.daily.wind_gusts_10m_max[d]||12):12;
+    var windDeg=(forecast.daily&&forecast.daily.wind_direction_10m_dominant)?(forecast.daily.wind_direction_10m_dominant[d]||180):180;
+    var precipPct=(forecast.daily&&forecast.daily.precipitation_probability_max)?(forecast.daily.precipitation_probability_max[d]||0):0;
+    var wCode=(forecast.daily&&forecast.daily.weather_code)?(forecast.daily.weather_code[d]||0):0;
+    var wavePeriod=(marine.daily&&marine.daily.wave_period_max)?(marine.daily.wave_period_max[d]||6):6;
+    var waveFt=waveHeightFt(waveM);
 
-    var waveFt = waveHeightFt(waveM);
-    var sol = solunarRating(date, lat, lon);
-    var sun = sunTimes(date, lat, lon);
-    var sunriseEDT = sun.rise - 5;
-    var sunsetEDT  = sun.set  - 5;
-    var shift = d * (50/60);
-    var low1 = ((3.2 + shift) % 24 + 24) % 24;
-    var high1 = (low1 + 6.2) % 24;
-    var low2  = (low1 + 12.4) % 24;
-    var isOutgoing = (sunriseEDT > low1 && sunriseEDT < high1) || (sunriseEDT > low2 && sunriseEDT < (low2+6.2));
-    var tideStr = isOutgoing ? "Outgoing ↓" : "Incoming ↑";
-    var tideCol = isOutgoing ? "var(--accent)" : "var(--text2)";
-    var result = scoreDay(waveM, windKt, precipPct, wCode, sol.score, isOutgoing, d);
-    var condStr = windDir(windDeg) + " " + Math.round(windKt) + "kt";
-    if (gustKt > windKt + 5) { condStr += " g" + Math.round(gustKt) + "kt"; }
-    if (precipPct > 30) { condStr += " · " + precipPct + "% rain"; }
-    if (wCode >= 95 && wCode < 99) { condStr += " · ⚡ tstm risk"; } else if (wCode >= 99) { condStr += " · ⛈ severe tstm"; }
-    var waveStr = waveFt.toFixed(1) + "ft @ " + Math.round(wavePeriod) + "s";
-    var conf = d < 3 ? '<span class="confidence-high">●</span>' : d < 5 ? '<span class="confidence-med">●</span>' : '<span class="confidence-low">●</span>';
+    // Hourly afternoon data for sea breeze check
+    var dayHourlyWindSpd=[]; var dayHourlyWindDir=[]; var dayHourlyTimes=[];
+    if (forecast.hourly&&forecast.hourly.time) {
+      var dateStr2=date.toISOString().slice(0,10);
+      for (var h=0;h<forecast.hourly.time.length;h++) {
+        if (forecast.hourly.time[h].startsWith(dateStr2)) {
+          dayHourlyTimes.push(forecast.hourly.time[h]);
+          dayHourlyWindSpd.push(forecast.hourly.wind_speed_10m?forecast.hourly.wind_speed_10m[h]:10);
+          dayHourlyWindDir.push(forecast.hourly.wind_direction_10m?forecast.hourly.wind_direction_10m[h]:180);
+        }
+      }
+    }
+    var sb=detectSeaBreeze(dayHourlyTimes,dayHourlyWindSpd,dayHourlyWindDir);
+
+    // Sun/solunar
+    var sun=sunTimes(date,lat,lon);
+    var dawnEDT=nauticalDawn(sun.rise-5);
+    var sunriseEDT=sun.rise-5;
+    var sunsetEDT=sun.set-5;
+    var sol=solunarRating(date,lat,lon);
+
+    // Tide
+    var shift=d*(50/60);
+    var low1=((3.2+shift)%24+24)%24;
+    var high1=(low1+6.2)%24;
+    var low2=(low1+12.4)%24;
+    var isOutgoing=(dawnEDT>low1&&dawnEDT<high1)||(dawnEDT>low2&&dawnEDT<(low2+6.2));
+    var tideStr=isOutgoing?"Outgoing ↓":"Incoming ↑";
+    var tideCol=isOutgoing?"var(--accent)":"var(--text2)";
+
+    // Score
+    var result=scoreDay(waveM,windKt,precipPct,wCode,sol.score,isOutgoing,d);
+
+    // Condition string — morning focus
+    var condStr=windDirName(windDeg)+" "+Math.round(windKt)+"kt";
+    if (gustKt>windKt+5) { condStr+=" g"+Math.round(gustKt)+"kt"; }
+    if (wCode>=95&&wCode<99) { condStr+=" · ⚡ tstm risk"; }
+    else if (wCode>=99) { condStr+=" · ⛈ severe"; }
+    if (sb.risk) { condStr+=" · 🌊 SB aft."; }
+
+    var conf=d<3?'<span class="conf-high">●</span>':d<5?'<span class="conf-med">●</span>':'<span class="conf-low">●</span>';
+
     var scoreHtml;
     if (result.nogo) {
-      scoreHtml = '<span class="pill pill-no">NO-GO ✗</span>';
-      nogoDays.push(dateStr + " — " + result.nogoReason);
-    } else if (result.score >= 75) {
-      scoreHtml = '<span class="pill pill-go">' + result.score + '/100 ✓</span>';
-    } else if (result.score >= 50) {
-      scoreHtml = '<span class="pill pill-mg">' + result.score + '/100 ⚠</span>';
+      scoreHtml='<span class="pill pill-no">NO-GO ✗</span>';
+      nogoDays.push(dayName+" "+monthName+" "+date.getDate()+" — "+result.nogoReason);
+    } else if (result.score>=75) {
+      scoreHtml='<span class="pill pill-go">'+result.score+'/100 ✓</span>';
+    } else if (result.score>=50) {
+      scoreHtml='<span class="pill pill-mg">'+result.score+'/100 ⚠</span>';
     } else {
-      scoreHtml = '<span class="pill pill-no">' + result.score + '/100</span>';
+      scoreHtml='<span class="pill pill-no">'+result.score+'/100</span>';
     }
-    var isBest = !result.nogo && result.score >= 85;
-    rows += '<tr' + (isBest ? ' style="background:rgba(245,166,35,0.04);"' : '') + '>' +
-      '<td><div class="day-name" style="' + (result.nogo ? "color:var(--red);" : isBest ? "color:var(--gold);" : "") + '">' + dayName + (isBest ? " ★" : "") + '</div><div class="day-date">' + monthName + " " + date.getDate() + '</div></td>' +
-      '<td style="font-size:11px;color:' + (result.nogo ? "var(--red)" : "var(--text2)") + ';">' + condStr + ' ' + conf + '</td>' +
-      '<td style="color:' + (waveFt > 3 ? "var(--orange)" : waveFt > 4 ? "var(--red)" : "var(--text)") + ';">' + waveStr + '</td>' +
-      '<td>' + starsHtml(sol.score) + '<div class="sun-times">🌅 ' + fmtHr(sunriseEDT) + ' &nbsp; 🌇 ' + fmtHr(sunsetEDT) + '</div></td>' +
-      '<td style="color:' + tideCol + ';">' + tideStr + '</td>' +
-      '<td>' + scoreHtml + '</td>' +
+
+    var isBest=!result.nogo&&result.score>=80;
+    var sbWarning=sb.risk?'<div style="font-size:10px;color:var(--orange);margin-top:3px;">🌊 Sea breeze aft.</div>':"";
+
+    rows+='<tr'+(isBest?' style="background:rgba(245,166,35,0.04);"':'')+' onclick="showTripArc('+d+',\''+dayName+' '+monthName+' '+date.getDate()+'\')" style="cursor:pointer;'+(isBest?'background:rgba(245,166,35,0.04);':'')+'">' +
+      '<td><div class="day-lbl" style="'+(result.nogo?"color:var(--red);":isBest?"color:var(--gold);":"")+'">'+dayName+(isBest?" ★":"")+'</div><div class="day-dt">'+monthName+" "+date.getDate()+'</div></td>' +
+      '<td style="font-size:11px;color:'+(result.nogo?"var(--red)":"var(--text2)")+';">'+condStr+' '+conf+sbWarning+'</td>' +
+      '<td style="color:'+(waveFt>4?"var(--red)":waveFt>3?"var(--orange)":"var(--text)")+';">'+waveFt.toFixed(1)+'ft<div style="font-size:10px;color:var(--text3);">@ '+Math.round(wavePeriod)+'s</div></td>' +
+      '<td>'+windDirName(windDeg)+'<div style="font-size:10px;color:var(--text3);">'+Math.round(windKt)+'kt'+( gustKt>windKt+5?' g'+Math.round(gustKt):'')+'</div></td>' +
+      '<td>'+starsHtml(sol.score)+'<div class="sun-block">🌄 '+fmtHr(dawnEDT)+'<br>🌅 '+fmtHr(sunriseEDT)+' 🌇 '+fmtHr(sunsetEDT)+'</div></td>' +
+      '<td style="color:'+tideCol+';font-size:11px;">'+tideStr+'</td>' +
+      '<td>'+scoreHtml+'</td>' +
       '</tr>';
+
     if (!result.nogo) {
-      scoredDays.push({ dateStr:dateStr, score:result.score, waveFt:waveFt, windKt:Math.round(windKt), solScore:sol.score, isOutgoing:isOutgoing, majorTime:fmtHr(sol.major1) });
+      scoredDays.push({dateStr:dayName+" "+monthName+" "+date.getDate(),score:result.score,waveFt:waveFt,windKt:Math.round(windKt),solScore:sol.score,isOutgoing:isOutgoing,majorTime:fmtHr(sol.major1),dawnTime:fmtHr(dawnEDT),sb:sb,dayIdx:d});
     }
   }
 
-  document.getElementById("forecast-tbody").innerHTML = rows;
+  document.getElementById("forecast-tbody").innerHTML=rows;
 
   // NO-GO note
-  if (nogoDays.length > 0) {
-    document.getElementById("forecast-nogo-note").style.display = "block";
-    document.getElementById("forecast-nogo-note").textContent = "⛔ NO-GO days: " + nogoDays.join(" · ");
+  if (nogoDays.length>0) {
+    document.getElementById("nogo-note").style.display="block";
+    document.getElementById("nogo-note").textContent="⛔ NO-GO: "+nogoDays.join(" · ");
   } else {
-    document.getElementById("forecast-nogo-note").style.display = "none";
+    document.getElementById("nogo-note").style.display="none";
   }
 
   // Best picks
-  scoredDays.sort(function(a,b) { return b.score - a.score; });
-  var medals = ["🏆","🥈","🥉"];
-  var pickHtml = "";
-  for (var i=0; i<Math.min(3,scoredDays.length); i++) {
-    var day = scoredDays[i];
-    pickHtml += '<div style="padding:6px 0;border-bottom:1px solid var(--border);">' +
-      '<strong style="color:' + (i===0?"var(--gold)":i===1?"var(--accent)":"var(--text)") + ';">' + medals[i] + ' ' + day.dateStr + ' — ' + day.score + '/100</strong><br>' +
-      '<span style="font-size:11px;color:var(--text2);">Seas ' + day.waveFt.toFixed(1) + 'ft · Wind ' + day.windKt + 'kt · ' + starsHtml(day.solScore) + ' major ' + day.majorTime + ' · ' + (day.isOutgoing?"Outgoing ↓":"Incoming ↑") + '</span>' +
+  scoredDays.sort(function(a,b){return b.score-a.score;});
+  var medals=["🏆","🥈","🥉"];
+  var pickHtml="";
+  for (var i=0;i<Math.min(3,scoredDays.length);i++) {
+    var day=scoredDays[i];
+    pickHtml+='<div style="padding:6px 0;border-bottom:1px solid var(--border);">'+
+      '<strong style="color:'+(i===0?"var(--gold)":i===1?"var(--accent)":"var(--text)")+';">'+medals[i]+' '+day.dateStr+' — '+day.score+'/100</strong><br>'+
+      '<span style="font-size:11px;color:var(--text2);">Seas '+day.waveFt.toFixed(1)+'ft · Wind '+day.windKt+'kt · '+starsHtml(day.solScore)+' major '+day.majorTime+' · Depart '+day.dawnTime+(day.sb.risk?' · ⚠ Sea breeze aft.':'')+'</span>'+
       '</div>';
   }
-  if (!pickHtml) { pickHtml = '<div style="color:var(--text2);">No clearly good days in this window — check conditions closely.</div>'; }
-  document.getElementById("best-picks-content").innerHTML = pickHtml;
+  if (!pickHtml) { pickHtml='<div style="color:var(--text2);">No good days in this window. Check conditions closely.</div>'; }
+  document.getElementById("best-picks").innerHTML=pickHtml;
 
-  // Update weather detail panel
-  var detailHtml = "";
-  for (var d=0; d<7; d++) {
-    var date2 = new Date(today.getTime() + d*86400000);
-    var dayName2 = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date2.getDay()];
-    var monthName2 = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date2.getMonth()];
-    var wM = (marine.daily && marine.daily.wave_height_max) ? (marine.daily.wave_height_max[d]||0.5) : 0.5;
-    var wKt = (forecast.daily && forecast.daily.wind_speed_10m_max) ? (forecast.daily.wind_speed_10m_max[d]||10) : 10;
-    var gKt = (forecast.daily && forecast.daily.wind_gusts_10m_max) ? (forecast.daily.wind_gusts_10m_max[d]||12) : 12;
-    var wDeg = (forecast.daily && forecast.daily.wind_direction_10m_dominant) ? (forecast.daily.wind_direction_10m_dominant[d]||180) : 180;
-    var pp = (forecast.daily && forecast.daily.precipitation_probability_max) ? (forecast.daily.precipitation_probability_max[d]||0) : 0;
-    var wc = (forecast.daily && forecast.daily.weather_code) ? (forecast.daily.weather_code[d]||0) : 0;
-    var wp = (marine.daily && marine.daily.wave_period_max) ? (marine.daily.wave_period_max[d]||6) : 6;
-    var conf2 = d < 3 ? "High confidence" : d < 5 ? "Moderate confidence" : "Directional only";
-    var confCol = d < 3 ? "var(--green)" : d < 5 ? "var(--orange)" : "var(--text3)";
-    detailHtml += '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 13px;">' +
-      '<div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px;">' + dayName2 + " " + monthName2 + " " + date2.getDate() + ' <span style="font-size:10px;color:' + confCol + ';">' + conf2 + '</span></div>' +
-      '<div class="drow"><span class="dlabel">Wind</span><span class="dval">' + windDir(wDeg) + " " + Math.round(wKt) + 'kt (gusts ' + Math.round(gKt) + 'kt)</span></div>' +
-      '<div class="drow"><span class="dlabel">Seas</span><span class="dval">' + waveHeightFt(wM).toFixed(1) + 'ft @ ' + Math.round(wp) + 's</span></div>' +
-      '<div class="drow"><span class="dlabel">Conditions</span><span class="dval">' + weatherCodeDesc(wc) + '</span></div>' +
-      '<div class="drow"><span class="dlabel">Rain probability</span><span class="dval' + (pp>50?" o":"") + '">' + pp + '%</span></div>' +
+  // Weather detail panel
+  var detailHtml="";
+  for (var d2=0;d2<7;d2++) {
+    var date3=new Date(today.getTime()+d2*86400000);
+    var dn3=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][date3.getDay()];
+    var mn3=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][date3.getMonth()];
+    var wM3=(marine.daily&&marine.daily.wave_height_max)?(marine.daily.wave_height_max[d2]||0.5):0.5;
+    var wKt3=(forecast.daily&&forecast.daily.wind_speed_10m_max)?(forecast.daily.wind_speed_10m_max[d2]||10):10;
+    var gKt3=(forecast.daily&&forecast.daily.wind_gusts_10m_max)?(forecast.daily.wind_gusts_10m_max[d2]||12):12;
+    var wDeg3=(forecast.daily&&forecast.daily.wind_direction_10m_dominant)?(forecast.daily.wind_direction_10m_dominant[d2]||180):180;
+    var pp3=(forecast.daily&&forecast.daily.precipitation_probability_max)?(forecast.daily.precipitation_probability_max[d2]||0):0;
+    var wc3=(forecast.daily&&forecast.daily.weather_code)?(forecast.daily.weather_code[d2]||0):0;
+    var wp3=(marine.daily&&marine.daily.wave_period_max)?(marine.daily.wave_period_max[d2]||6):6;
+    var conf3=d2<3?"High confidence":d2<5?"Moderate confidence":"Directional only";
+    var confCol3=d2<3?"var(--green)":d2<5?"var(--orange)":"var(--text3)";
+    detailHtml+='<div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 13px;">'+
+      '<div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px;">'+dn3+" "+mn3+" "+date3.getDate()+' <span style="font-size:10px;color:'+confCol3+';">'+conf3+'</span></div>'+
+      '<div class="drow"><span class="dlabel">Wind</span><span class="dval">'+windDirName(wDeg3)+" "+Math.round(wKt3)+'kt (g'+Math.round(gKt3)+'kt)</span></div>'+
+      '<div class="drow"><span class="dlabel">Seas</span><span class="dval">'+waveHeightFt(wM3).toFixed(1)+'ft @ '+Math.round(wp3)+'s</span></div>'+
+      '<div class="drow"><span class="dlabel">Conditions</span><span class="dval">'+weatherCodeDesc(wc3)+'</span></div>'+
+      '<div class="drow"><span class="dlabel">Rain probability</span><span class="dval'+(pp3>50?" o":"")+'">'+pp3+'%</span></div>'+
       '</div>';
   }
-  document.getElementById("weather-detail-grid").innerHTML = detailHtml;
+  document.getElementById("weather-detail").innerHTML=detailHtml;
 
-  // Update timestamp badge
-  var now = new Date();
-  document.getElementById("weather-badge").innerHTML =
-    '<span class="live"></span>Live · Updated ' + now.getHours() + ':' + (now.getMinutes()<10?"0":"")+now.getMinutes();
-
-  var p2 = getP();
-  document.getElementById("weather-source-note").innerHTML =
-    '<span class="live"></span><strong>Open-Meteo Marine API</strong> · GFS + ECMWF · ' + (p2.fcLat||25.72) + '°N, ' + Math.abs(p2.fcLon||-82.65) + '°W · ' +
-    'Updated ' + now.toLocaleTimeString() + ' · ' +
-    '<span class="confidence-high">● Days 1–3 high</span> &nbsp;' +
-    '<span class="confidence-med">● Days 4–5 moderate</span> &nbsp;' +
-    '<span class="confidence-low">● Days 6–7 directional</span>';
+  // Badge
+  var now=new Date();
+  var p2=getP();
+  document.getElementById("weather-badge").innerHTML='<span class="live"></span>Live · '+now.getHours()+':'+(now.getMinutes()<10?"0":"")+now.getMinutes();
+  document.getElementById("weather-source-note").innerHTML=
+    '<span class="live"></span><strong>Open-Meteo Marine API</strong> · GFS + ECMWF/GraphCast · Fishing grounds avg '+(p2.fcLat||25.41)+'°N, '+Math.abs(p2.fcLon||-82.53)+'°W · Updated '+now.toLocaleTimeString()+' · '+
+    '<span class="conf-high">● 0–72h high</span> &nbsp;<span class="conf-med">● Days 4–5 moderate</span> &nbsp;<span class="conf-low">● Days 6–7 directional</span>';
 }
 
 // ============================================================
-// SPOTS DATA & FUNCTIONS
+// TRIP ARC — morning departure through 4pm return
 // ============================================================
-var SPOTS = [
+function showTripArc(dayIdx, dateStr) {
+  var p=getP();
+  var returnHr=p.returnHr||16;
+  var today=new Date(); today.setHours(0,0,0,0);
+  var date=new Date(today.getTime()+dayIdx*86400000);
+  var sun=sunTimes(date,25.9,-81.73);
+  var dawnEDT=nauticalDawn(sun.rise-5);
+  var sol=solunarRating(date,25.9,-81.73);
+
+  // Pull hourly data for this day
+  var morningWinds=[]; var afternoonWinds=[]; var afternoonDirs=[];
+  var morningWaves=[]; var afternoonWaves=[];
+  if (cachedHourlyData&&cachedHourlyData.hourly&&cachedHourlyData.hourly.time) {
+    var dateStr2=date.toISOString().slice(0,10);
+    for (var h=0;h<cachedHourlyData.hourly.time.length;h++) {
+      if (!cachedHourlyData.hourly.time[h].startsWith(dateStr2)) { continue; }
+      var hr=new Date(cachedHourlyData.hourly.time[h]).getHours();
+      var ws=cachedHourlyData.hourly.wind_speed_10m?cachedHourlyData.hourly.wind_speed_10m[h]:10;
+      var wd=cachedHourlyData.hourly.wind_direction_10m?cachedHourlyData.hourly.wind_direction_10m[h]:180;
+      if (hr>=4&&hr<12) { morningWinds.push(ws); }
+      if (hr>=12&&hr<=returnHr) { afternoonWinds.push(ws); afternoonDirs.push(wd); }
+    }
+  }
+
+  var avgMorningWind=morningWinds.length?Math.round(morningWinds.reduce(function(a,b){return a+b;},0)/morningWinds.length):null;
+  var maxAftWind=afternoonWinds.length?Math.round(Math.max.apply(null,afternoonWinds)):null;
+  var sbDirs=afternoonDirs.filter(function(d){return d>=200&&d<=330;});
+  var sbRisk=sbDirs.length>=2&&maxAftWind>8;
+
+  var depTime=fmtHr(dawnEDT);
+  var retTime=returnHr+":00pm";
+
+  var morningStatus=avgMorningWind!==null?(avgMorningWind<=p.maxWind*0.6?"go":"warn"):"go";
+  var returnStatus=sbRisk?"warn":(maxAftWind!==null&&maxAftWind>p.maxWind*0.7?"warn":"go");
+
+  var html='<div class="arc-box">'+
+    '<div class="arc-title">'+dateStr+' — Trip timeline</div>'+
+    '<div class="arc-row">'+
+      '<span class="arc-time">'+depTime+' — Depart</span>'+
+      '<span class="arc-cond">Nautical dawn · '+starsHtml(sol.score)+' solunar major '+fmtHr(sol.major1)+'</span>'+
+      '<span class="arc-pill arc-go">Depart ✓</span>'+
+    '</div>'+
+    '<div class="arc-row">'+
+      '<span class="arc-time">Dawn–Noon</span>'+
+      '<span class="arc-cond">Morning window · '+(avgMorningWind!==null?"Avg wind "+avgMorningWind+"kt":"Wind data loading")+'</span>'+
+      '<span class="arc-pill '+(morningStatus==="go"?"arc-go":"arc-warn")+'">'+(morningStatus==="go"?"Good ✓":"Monitor ⚠")+'</span>'+
+    '</div>'+
+    '<div class="arc-row">'+
+      '<span class="arc-time">Noon–'+returnHr%12+'pm</span>'+
+      '<span class="arc-cond">Return window · '+(maxAftWind!==null?"Max wind "+maxAftWind+"kt":"Wind data loading")+(sbRisk?" · SW/W shift detected":"")+'</span>'+
+      '<span class="arc-pill '+(returnStatus==="go"?"arc-go":"arc-warn")+'">'+(returnStatus==="go"?"Clear ✓":"Sea breeze ⚠")+'</span>'+
+    '</div>'+
+    '<div class="arc-row">'+
+      '<span class="arc-time">'+returnHr%12+':00pm</span>'+
+      '<span class="arc-cond">Hard return deadline — Caxambas Pass</span>'+
+      '<span class="arc-pill arc-go">Target ⚓</span>'+
+    '</div>'+
+  '</div>';
+
+  if (sbRisk) {
+    html+='<div class="sb-advisory">🌊 <strong>Sea breeze advisory:</strong> Afternoon wind shift to SW/W detected with '+maxAftWind+'kt. Seas may build 1–3ft on the return run. Plan to be heading in by noon–1pm. The SW Florida sea breeze typically peaks 2–4pm and can make for a rough return.</div>';
+  }
+
+  document.getElementById("trip-arc-content").innerHTML=html;
+  document.getElementById("trip-arc-card").style.display="block";
+  document.getElementById("trip-arc-card").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+// ============================================================
+// SPOTS
+// ============================================================
+var SPOTS=[
   {name:"SLCAXE",lat:25.9037,lon:-81.7343,dist:0.0,dir:"E",type:"origin"},
   {name:"Home Port",lat:25.9309,lon:-81.7024,dist:2.4,dir:"NE",type:"homeport"},
   {name:"14MREEF1",lat:25.7885,lon:-81.9514,dist:13.6,dir:"WSW",type:"reef"},
@@ -919,72 +1144,50 @@ var SPOTS = [
   {name:"SL24AMHB",lat:25.9481,lon:-83.722,dist:107.4,dir:"W",type:"mhb"}
 ];
 
-function fuelRT(dist) { var p=getP(); return Math.round(dist*2/p.mpg*10)/10; }
-function fmtTransit(dist) {
-  var p=getP(); var m=Math.round(dist/p.speed*60);
-  var h=Math.floor(m/60); var mn=m%60;
-  return h>0 ? h+"h "+mn+"m" : mn+"m";
+function fuelRT(dist){var p=getP();return Math.round(dist*2/p.mpg*10)/10;}
+function fmtTransit(dist){var p=getP();var m=Math.round(dist/p.speed*60);var h=Math.floor(m/60);var mn=m%60;return h>0?h+"h "+mn+"m":mn+"m";}
+function typeGroup(t){if(t==="flt"||t==="fg"){return"flt";}if(t==="bfl"){return"reef";}return t;}
+function spotTag(t){
+  if(t==="mhb"){return'<span class="stag stag-oor">OOR</span>';}
+  if(t==="flt"||t==="fg"){return'<span class="stag stag-flt">FLT</span>';}
+  if(t==="pot"){return'<span class="stag stag-pot">POT</span>';}
+  if(t==="reef"||t==="bfl"){return'<span class="stag stag-reef">REEF</span>';}
+  if(t==="jd"){return'<span class="stag stag-jd">JD</span>';}
+  return"";
 }
-function typeGroup(t) {
-  if (t==="flt"||t==="fg") { return "flt"; }
-  if (t==="bfl") { return "reef"; }
-  return t;
-}
-function spotTag(t) {
-  if (t==="mhb") { return '<span class="stag stag-oor">OOR</span>'; }
-  if (t==="flt"||t==="fg") { return '<span class="stag stag-flt">FLT</span>'; }
-  if (t==="pot") { return '<span class="stag stag-pot">POT</span>'; }
-  if (t==="reef"||t==="bfl") { return '<span class="stag stag-reef">REEF</span>'; }
-  if (t==="jd") { return '<span class="stag stag-jd">JD</span>'; }
-  return "";
-}
-function filterSpots() {
-  var maxFuel = parseInt(document.getElementById("fuelFilter").value);
-  document.getElementById("fuelFilterVal").textContent = maxFuel+" gal";
-  var sort = document.getElementById("sortMode").value;
-  var typeF = document.getElementById("typeFilter").value;
-  var dirF  = document.getElementById("dirFilter").value;
-  var list  = SPOTS.filter(function(s){ return s.dist>0; });
-  if (typeF!=="all") {
-    list = list.filter(function(s){
-      var g=typeGroup(s.type);
-      if (typeF==="other") { return !["flt","pot","reef","jd","tower","mhb","bfl","fg"].includes(s.type); }
-      return g===typeF||s.type===typeF;
-    });
-  }
-  if (dirF!=="all") { list = list.filter(function(s){ return s.dir===dirF; }); }
-  if (sort==="dist") { list.sort(function(a,b){ return a.dist-b.dist; }); }
-  else if (sort==="fuel") { list.sort(function(a,b){ return fuelRT(a.dist)-fuelRT(b.dist); }); }
-  else { list.sort(function(a,b){ return a.name.localeCompare(b.name); }); }
-  var inRange = list.filter(function(s){ return fuelRT(s.dist)<=maxFuel; });
-  var oor = list.filter(function(s){ return fuelRT(s.dist)>maxFuel; });
-  var all = inRange.concat(oor);
-  document.getElementById("spotCount").textContent =
-    inRange.length+" spots within "+maxFuel+" gal one-way  ·  "+oor.length+" beyond filter (dimmed)";
+function filterSpots(){
+  var maxFuel=parseInt(document.getElementById("fuelFilter").value);
+  document.getElementById("fuelFilterVal").textContent=maxFuel+" gal";
+  var sort=document.getElementById("sortMode").value;
+  var typeF=document.getElementById("typeFilter").value;
+  var dirF=document.getElementById("dirFilter").value;
+  var list=SPOTS.filter(function(s){return s.dist>0;});
+  if(typeF!=="all"){list=list.filter(function(s){var g=typeGroup(s.type);if(typeF==="other"){return!["flt","pot","reef","jd","tower","mhb","bfl","fg"].includes(s.type);}return g===typeF||s.type===typeF;});}
+  if(dirF!=="all"){list=list.filter(function(s){return s.dir===dirF;});}
+  if(sort==="dist"){list.sort(function(a,b){return a.dist-b.dist;});}
+  else if(sort==="fuel"){list.sort(function(a,b){return fuelRT(a.dist)-fuelRT(b.dist);});}
+  else{list.sort(function(a,b){return a.name.localeCompare(b.name);});}
+  var inRange=list.filter(function(s){return fuelRT(s.dist)<=maxFuel;});
+  var oor=list.filter(function(s){return fuelRT(s.dist)>maxFuel;});
+  var all=inRange.concat(oor);
+  document.getElementById("spotCount").textContent=inRange.length+" spots within "+maxFuel+" gal one-way  ·  "+oor.length+" beyond filter (dimmed)";
   var rows="";
-  for (var i=0;i<all.length;i++) {
-    var s=all[i]; var fr=fuelRT(s.dist); var dim=fr>maxFuel;
-    var fuelCol = fr>100?"color:var(--red)":fr>65?"color:var(--orange)":"";
+  for(var i=0;i<all.length;i++){
+    var s=all[i];var fr=fuelRT(s.dist);var dim=fr>maxFuel;
+    var fc=fr>100?"color:var(--red)":fr>65?"color:var(--orange)":"";
     rows+='<tr onclick="selectSpot(\''+s.name+'\')" style="'+(dim?"opacity:0.35;":"")+'">'+
       '<td>'+(i+1)+'</td>'+
-      '<td><span class="spot-name">'+s.name+'</span>'+spotTag(s.type)+
-        '<span class="spot-coords">'+s.lat.toFixed(4)+'°N &nbsp;'+Math.abs(s.lon).toFixed(4)+'°W</span></td>'+
-      '<td>'+s.dist+' nm</td>'+
-      '<td style="color:var(--text2);">'+s.dir+'</td>'+
-      '<td style="'+fuelCol+'">'+fr+' gal</td>'+
-      '<td style="color:var(--text2);">'+fmtTransit(s.dist)+'</td>'+
-      '<td style="color:var(--text2);">'+s.type.toUpperCase()+'</td>'+
-      '</tr>';
+      '<td><span class="spot-name">'+s.name+'</span>'+spotTag(s.type)+'<span class="spot-coords">'+s.lat.toFixed(4)+'°N &nbsp;'+Math.abs(s.lon).toFixed(4)+'°W</span></td>'+
+      '<td>'+s.dist+' nm</td>'+'<td style="color:var(--text2);">'+s.dir+'</td>'+
+      '<td style="'+fc+'">'+fr+' gal</td>'+'<td style="color:var(--text2);">'+fmtTransit(s.dist)+'</td>'+
+      '<td style="color:var(--text2);">'+s.type.toUpperCase()+'</td></tr>';
   }
-  document.getElementById("spot-tbody").innerHTML = rows;
+  document.getElementById("spot-tbody").innerHTML=rows;
 }
-function selectSpot(name) {
-  var s=null;
-  for (var i=0;i<SPOTS.length;i++) { if (SPOTS[i].name===name) { s=SPOTS[i]; break; } }
-  if (!s) { return; }
-  var p=getP(); var fr=fuelRT(s.dist);
-  var rem=p.tank-fr; var reserveGal=p.tank*p.reservePct/100;
-  var safe=rem>=reserveGal; var oor=fr>p.tank*(1-p.reservePct/100);
+function selectSpot(name){
+  var s=null;for(var i=0;i<SPOTS.length;i++){if(SPOTS[i].name===name){s=SPOTS[i];break;}}if(!s){return;}
+  var p=getP();var fr=fuelRT(s.dist);var rem=p.tank-fr;var reserveGal=p.tank*p.reservePct/100;
+  var safe=rem>=reserveGal;var oor=fr>p.tank*(1-p.reservePct/100);
   var html='<div class="two-col">'+
     '<div>'+
       '<div class="drow"><span class="dlabel">Spot</span><span class="dval">'+s.name+'</span></div>'+
@@ -999,12 +1202,12 @@ function selectSpot(name) {
       '<div class="drow"><span class="dlabel">Reserve status</span><span class="dval '+(safe?"g":"r")+'">'+(safe?"Safe ✓":"UNSAFE ✗")+'</span></div>'+
       '<div class="drow"><span class="dlabel">Est. fuel cost</span><span class="dval">~$'+Math.round(fr*p.costpg)+'</span></div>'+
     '</div></div>';
-  if (oor) { html+='<div class="danger-bar" style="margin-top:10px;">⛔ Beyond usable fuel range. Reference only.</div>'; }
+  if(oor){html+='<div class="danger-bar" style="margin-top:10px;">⛔ Beyond usable fuel range. Reference only.</div>';}
   document.getElementById("spot-detail-content").innerHTML=html;
   document.getElementById("spot-detail").style.display="block";
   document.getElementById("spot-detail").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
-function calcFuel() {
+function calcFuel(){
   var p=getP();
   var dist=parseInt(document.getElementById("distSlider").value);
   var stops=parseInt(document.getElementById("stopsSlider").value);
@@ -1012,33 +1215,24 @@ function calcFuel() {
   document.getElementById("distOut").textContent=dist+" nm";
   document.getElementById("stopsOut").textContent=stops;
   document.getElementById("loadOut").textContent=load+" gal";
-  var total=dist*2*stops; var burn=Math.round(total/p.mpg);
-  var rem=load-burn; var reserveGal=Math.round(p.tank*p.reservePct/100);
-  var buf=rem-reserveGal;
-  var mins=Math.round(dist/p.speed*60); var h=Math.floor(mins/60); var mn=mins%60;
+  var total=dist*2*stops;var burn=Math.round(total/p.mpg);var rem=load-burn;
+  var reserveGal=Math.round(p.tank*p.reservePct/100);var buf=rem-reserveGal;
+  var mins=Math.round(dist/p.speed*60);var h=Math.floor(mins/60);var mn=mins%60;
   document.getElementById("fc-total").textContent=total+" nm RT";
   document.getElementById("fc-burn").textContent=burn+" gal";
   document.getElementById("fc-remain").textContent=rem+" gal";
   document.getElementById("fc-time").textContent=(h>0?h+"h ":"")+mn+"m one-way";
   document.getElementById("fc-cost").textContent="$"+Math.round(burn*p.costpg);
-  var st=document.getElementById("fuel-status"); var bel=document.getElementById("fc-buf");
-  if (rem<reserveGal) {
-    st.className="status-box status-danger"; st.textContent="✗ UNSAFE — exceeds "+p.reservePct+"% reserve.";
-    bel.textContent=Math.abs(buf)+" gal short"; bel.className="dval r";
-  } else if (buf<p.tank*0.1) {
-    st.className="status-box status-mg"; st.textContent="⚠ MARGINAL — reserve barely adequate.";
-    bel.textContent=buf+" gal above reserve (tight)"; bel.className="dval o";
-  } else {
-    st.className="status-box status-safe"; st.textContent="✓ Safe — "+buf+" gal above "+p.reservePct+"% reserve";
-    bel.textContent=buf+" gal above reserve"; bel.className="dval g";
-  }
+  var st=document.getElementById("fuel-status");var bel=document.getElementById("fc-buf");
+  if(rem<reserveGal){st.className="status-box status-danger";st.textContent="✗ UNSAFE — exceeds "+p.reservePct+"% reserve.";bel.textContent=Math.abs(buf)+" gal short";bel.className="dval r";}
+  else if(buf<p.tank*0.1){st.className="status-box status-mg";st.textContent="⚠ MARGINAL — reserve barely adequate.";bel.textContent=buf+" gal above reserve (tight)";bel.className="dval o";}
+  else{st.className="status-box status-safe";st.textContent="✓ Safe — "+buf+" gal above "+p.reservePct+"% reserve";bel.textContent=buf+" gal above reserve";bel.className="dval g";}
 }
-function buildFuelTable() {
+function buildFuelTable(){
   var p=getP();
-  var top=SPOTS.filter(function(s){ return s.dist>0&&s.type!=="mhb"; }).slice(0,30);
+  var top=SPOTS.filter(function(s){return s.dist>0&&s.type!=="mhb";}).slice(0,30);
   var rows="";
-  for (var i=0;i<top.length;i++) {
-    var s=top[i]; var fr=fuelRT(s.dist);
+  for(var i=0;i<top.length;i++){var s=top[i];var fr=fuelRT(s.dist);
     rows+='<tr><td>'+s.name+'</td><td style="color:var(--text2);">'+s.dist+'</td>'+
       '<td style="'+(fr>p.tank*0.5?"color:var(--orange)":"")+'">'+fr+' gal</td>'+
       '<td style="color:var(--text2);">$'+Math.round(fr*p.costpg)+'</td>'+
@@ -1047,11 +1241,9 @@ function buildFuelTable() {
   }
   document.getElementById("fuel-tbody").innerHTML=rows;
 }
-function buildFuelMetrics() {
-  var p=getP();
-  var usable=Math.round(p.tank*(1-p.reservePct/100));
-  var reserveGal=Math.round(p.tank*p.reservePct/100);
-  var safeRange=Math.round(usable*p.mpg/2);
+function buildFuelMetrics(){
+  var p=getP();var usable=Math.round(p.tank*(1-p.reservePct/100));
+  var reserveGal=Math.round(p.tank*p.reservePct/100);var safeRange=Math.round(usable*p.mpg/2);
   document.getElementById("fuel-metrics").innerHTML=
     '<div class="metric"><div class="metric-label">Tank</div><div class="metric-value">'+p.tank+'<span class="metric-unit"> gal</span></div></div>'+
     '<div class="metric"><div class="metric-label">'+p.reservePct+'% Reserve</div><div class="metric-value">'+reserveGal+'<span class="metric-unit"> gal</span></div></div>'+
@@ -1060,31 +1252,29 @@ function buildFuelMetrics() {
     '<div class="metric"><div class="metric-label">Safe one-way</div><div class="metric-value">'+safeRange+'<span class="metric-unit"> nm</span></div></div>'+
     '<div class="metric"><div class="metric-label">Cruise speed</div><div class="metric-value">'+p.speed+'<span class="metric-unit"> mph</span></div></div>';
 }
-function buildProfileDisplay() {
-  var p=getP();
-  var usable=Math.round(p.tank*(1-p.reservePct/100));
-  var reserveGal=Math.round(p.tank*p.reservePct/100);
-  var safeRange=Math.round(usable*p.mpg/2);
+function buildProfileDisplay(){
+  var p=getP();var usable=Math.round(p.tank*(1-p.reservePct/100));
+  var reserveGal=Math.round(p.tank*p.reservePct/100);var safeRange=Math.round(usable*p.mpg/2);
   document.getElementById("profile-display").innerHTML=
     '<div class="drow"><span class="dlabel">Vessel</span><span class="dval">'+p.vessel+'</span></div>'+
     '<div class="drow"><span class="dlabel">Engines</span><span class="dval">'+p.engines+'</span></div>'+
     '<div class="drow"><span class="dlabel">Speed / efficiency</span><span class="dval">'+p.speed+' mph · '+p.mpg+' mpg</span></div>'+
     '<div class="drow"><span class="dlabel">Tank / usable</span><span class="dval">'+p.tank+' gal / <span style="color:var(--green)">'+usable+' gal</span></span></div>'+
     '<div class="drow"><span class="dlabel">Safe one-way range</span><span class="dval g">'+safeRange+' nm</span></div>'+
+    '<div class="drow"><span class="dlabel">Return deadline</span><span class="dval gold">'+(p.returnHr||16)+':00 — sea breeze aware</span></div>'+
     '<div class="drow"><span class="dlabel">NO-GO limits</span><span class="dval r">Seas &gt;'+p.maxSeas+'ft · Wind &gt;'+p.maxWind+'kt</span></div>';
   document.getElementById("hdr-title").textContent="Offshore Trip Planner — "+p.depart;
   document.getElementById("hdr-sub").textContent=p.vessel+" · "+p.engines+" · "+p.mpg+" mpg · "+p.tank+" gal · "+p.speed+" mph";
   document.getElementById("setup-active").innerHTML=
     '<div class="drow"><span class="dlabel">Vessel</span><span class="dval">'+p.vessel+'</span></div>'+
-    '<div class="drow"><span class="dlabel">Engines</span><span class="dval">'+p.engines+'</span></div>'+
     '<div class="drow"><span class="dlabel">Tank / usable / reserve</span><span class="dval">'+p.tank+' / '+usable+' / '+reserveGal+' gal</span></div>'+
     '<div class="drow"><span class="dlabel">Efficiency / speed</span><span class="dval">'+p.mpg+' mpg @ '+p.speed+' mph</span></div>'+
     '<div class="drow"><span class="dlabel">Fuel cost</span><span class="dval">$'+p.costpg.toFixed(2)+'/gal</span></div>'+
-    '<div class="drow"><span class="dlabel">Departure</span><span class="dval">'+p.depart+'</span></div>'+
-    '<div class="drow"><span class="dlabel">Forecast point</span><span class="dval">'+(p.fcLat||25.72)+'°N, '+Math.abs(p.fcLon||-82.65)+'°W</span></div>'+
+    '<div class="drow"><span class="dlabel">Forecast point</span><span class="dval">'+(p.fcLat||25.41)+'°N, '+Math.abs(p.fcLon||-82.53)+'°W</span></div>'+
+    '<div class="drow"><span class="dlabel">Return deadline</span><span class="dval gold">'+(p.returnHr||16)+':00</span></div>'+
     '<div class="drow"><span class="dlabel">NO-GO triggers</span><span class="dval r">Seas &gt;'+p.maxSeas+'ft · Wind &gt;'+p.maxWind+'kt</span></div>';
 }
-function populateSetupFields() {
+function populateSetupFields(){
   var p=loadProfile();
   document.getElementById("s-vessel").value=p.vessel;
   document.getElementById("s-engines").value=p.engines;
@@ -1094,48 +1284,42 @@ function populateSetupFields() {
   document.getElementById("s-speed").value=p.speed;
   document.getElementById("s-costpg").value=p.costpg;
   document.getElementById("s-depart").value=p.depart;
-  document.getElementById("s-fclat").value=p.fcLat||25.72;
-  document.getElementById("s-fclon").value=p.fcLon||-82.65;
+  document.getElementById("s-fclat").value=p.fcLat||25.41;
+  document.getElementById("s-fclon").value=p.fcLon||-82.53;
+  document.getElementById("s-return").value=p.returnHr||16;
   document.getElementById("s-maxseas").value=p.maxSeas;
   document.getElementById("s-maxwind").value=p.maxWind;
 }
-function saveSetup() {
+function saveSetup(){
   var p={
-    vessel:document.getElementById("s-vessel").value||DEFAULT_PROFILE.vessel,
-    engines:document.getElementById("s-engines").value||DEFAULT_PROFILE.engines,
-    tank:parseFloat(document.getElementById("s-tank").value)||DEFAULT_PROFILE.tank,
-    reservePct:parseFloat(document.getElementById("s-reserve").value)||DEFAULT_PROFILE.reservePct,
-    mpg:parseFloat(document.getElementById("s-mpg").value)||DEFAULT_PROFILE.mpg,
-    speed:parseFloat(document.getElementById("s-speed").value)||DEFAULT_PROFILE.speed,
-    costpg:parseFloat(document.getElementById("s-costpg").value)||DEFAULT_PROFILE.costpg,
-    depart:document.getElementById("s-depart").value||DEFAULT_PROFILE.depart,
-    fcLat:parseFloat(document.getElementById("s-fclat").value)||DEFAULT_PROFILE.fcLat,
-    fcLon:parseFloat(document.getElementById("s-fclon").value)||DEFAULT_PROFILE.fcLon,
-    maxSeas:parseFloat(document.getElementById("s-maxseas").value)||DEFAULT_PROFILE.maxSeas,
-    maxWind:parseFloat(document.getElementById("s-maxwind").value)||DEFAULT_PROFILE.maxWind
+    vessel:document.getElementById("s-vessel").value||DEFAULT.vessel,
+    engines:document.getElementById("s-engines").value||DEFAULT.engines,
+    tank:parseFloat(document.getElementById("s-tank").value)||DEFAULT.tank,
+    reservePct:parseFloat(document.getElementById("s-reserve").value)||DEFAULT.reservePct,
+    mpg:parseFloat(document.getElementById("s-mpg").value)||DEFAULT.mpg,
+    speed:parseFloat(document.getElementById("s-speed").value)||DEFAULT.speed,
+    costpg:parseFloat(document.getElementById("s-costpg").value)||DEFAULT.costpg,
+    depart:document.getElementById("s-depart").value||DEFAULT.depart,
+    fcLat:parseFloat(document.getElementById("s-fclat").value)||DEFAULT.fcLat,
+    fcLon:parseFloat(document.getElementById("s-fclon").value)||DEFAULT.fcLon,
+    returnHr:parseFloat(document.getElementById("s-return").value)||DEFAULT.returnHr,
+    maxSeas:parseFloat(document.getElementById("s-maxseas").value)||DEFAULT.maxSeas,
+    maxWind:parseFloat(document.getElementById("s-maxwind").value)||DEFAULT.maxWind
   };
-  try { localStorage.setItem("boatProfile",JSON.stringify(p)); } catch(e) {}
+  try{localStorage.setItem("boatProfile",JSON.stringify(p));}catch(e){}
   applyAll();
   fetchWeatherAndRender();
   document.getElementById("setup-saved").style.display="block";
-  setTimeout(function(){ document.getElementById("setup-saved").style.display="none"; },3000);
+  setTimeout(function(){document.getElementById("setup-saved").style.display="none";},3000);
 }
-function applyAll() {
-  buildProfileDisplay();
-  buildFuelMetrics();
-  buildFuelTable();
-  filterSpots();
-  buildSolunarTable();
+function applyAll(){
+  buildProfileDisplay();buildFuelMetrics();buildFuelTable();filterSpots();buildSolunarTable();
   var p=getP();
   document.getElementById("loadSlider").max=p.tank;
-  if (parseInt(document.getElementById("loadSlider").value)>p.tank) {
-    document.getElementById("loadSlider").value=p.tank;
-  }
+  if(parseInt(document.getElementById("loadSlider").value)>p.tank){document.getElementById("loadSlider").value=p.tank;}
   calcFuel();
 }
-// ============================================================
-// INIT — runs on page load
-// ============================================================
+// INIT
 populateSetupFields();
 applyAll();
 fetchWeatherAndRender();
