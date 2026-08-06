@@ -684,6 +684,9 @@ function fetchWeatherAndRender() {
   // Same-origin requests cannot be blocked by Safari privacy settings
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "./weather.json?t=" + Date.now(), true);
+  xhr.setRequestHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+xhr.setRequestHeader("Pragma", "no-cache");
+xhr.setRequestHeader("Expires", "0");
   xhr.timeout = 10000;
   xhr.onload = function() {
     if (xhr.status >= 200 && xhr.status < 300) {
